@@ -4,7 +4,8 @@ boolean PauseScreen = false;
 boolean Quit = false;
 boolean GameOver = false;
 boolean Victory = false;
-boolean ShipSelect = true;
+boolean ShipSelect = false;
+boolean highScore = false;
 
 // Ship Selection Variables
 PImage img;
@@ -21,9 +22,11 @@ ButtonRect green;
 
 // Gui Buttons 
 ButtonRect rect;
+ButtonRect hScoreButton;
 ButtonRect quit;
 ButtonRect mute;
 boolean rectPressed = false;
+boolean hScoreButtonPressed = false;
 boolean mutePressed = false;
 Vehicle player;
 //Enemy enemy1;
@@ -60,6 +63,12 @@ SoundFile sample, pew;
 //time variables
 Timer t1;
 
+//high score
+String[] hScoreArray;
+JSONArray scoreValues;
+int hScore;
+String name;
+
 // Arrays of varaibles
 ArrayList <Bullet> bullets;
 ArrayList <Enemy> enemies;
@@ -93,6 +102,11 @@ void setup() {
   mute = new ButtonRect(180,150,140,60, color(140), color(110));
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
+  hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
+  
+  //high score loading
+  scoreValues = loadJSONArray("highscores.json");
+  
 
   
   noStroke();
@@ -129,12 +143,31 @@ void draw() {
     }
     rect.update(mouseX, mouseY);
     rect.display();
+    hScoreButton.update(mouseX, mouseY);
+    hScoreButton.display();
     fill(225);
     textFont(courier);
+    text("High Scores", width/2, height/2+210);
     text("Start", width/2,height/2+140);
     textFont(titleFont);
     fill(232,236,40,200);
     text("StarSpace", width/2, height/4+50);
+  }
+  //High score menu
+  if (!StartScreen && highScore == true) {
+    //background(245, 30, 50);
+    image(img, 0, 0, 500, 500);
+    text("High Scores", 250, 50);
+    for (int i = 0; i < scoreValues.size(); i++) {
+      JSONObject score = scoreValues.getJSONObject(i);
+      int hScore = score.getInt("score");
+      String name = score.getString("name");
+      stroke(12);
+      textSize(0);
+      textFont(courier);
+      textAlign(CENTER, CENTER);
+      text(hScore + " - " + name, 250, 100 + i*25);
+    }
   }
   // Ship Select Menu
   if (!StartScreen && ShipSelect == true){
@@ -165,7 +198,7 @@ void draw() {
     image(greenship, 350, 150, 100, 200);
   }
   //if game has been started, they havnt quit and they havn't won
-  if (!StartScreen && !Quit && !Victory && !ShipSelect) {
+  if (!StartScreen && !Quit && !Victory && !ShipSelect && !highScore) {
     background(0);
     gui.display(score, hp, lives, level);
     //GAME OVER- check if they lost their last life
@@ -700,12 +733,18 @@ public Boolean collision(int x1, int y1, int w1, int h1, int x2, int y2, int w2,
 }
 
 void mousePressed(){
-  //start game
+  //start game and high score
   if(StartScreen == true) { 
     if(rect.isPressed()) {
       StartScreen = false;
+      ShipSelect = true;
+    }
+    if (hScoreButton.isPressed()) {
+      StartScreen = false;
+      highScore = true;
     }
   }
+ 
 
   //ship selection
   if (!StartScreen && ShipSelect == true){
@@ -750,6 +789,7 @@ void mousePressed(){
 
 void mouseReleased() {
   rect.isReleased();
+  hScoreButton.isReleased();
   quit.isReleased();
 }
 
