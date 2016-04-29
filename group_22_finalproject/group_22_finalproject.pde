@@ -60,14 +60,20 @@ PFont courier, titleFont;
 import processing.sound.*;
 SoundFile sample, pew;
 
+//grabbing java input library
+import javax.swing.*;
+
 //time variables
 Timer t1;
 
 //high score
-String[] hScoreArray;
+IntList scoreArray;
+StringList nameScoreArray;
 JSONArray scoreValues;
 int hScore;
-String name;
+int fillerScore = 0;
+String name = "";
+int delay = 1;
 
 // Arrays of varaibles
 ArrayList <Bullet> bullets;
@@ -105,8 +111,29 @@ void setup() {
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
   
   //high score loading
+  scoreArray = new IntList();
+  nameScoreArray = new StringList();
   scoreValues = loadJSONArray("highscores.json");
-  
+  for (int i = 0; i < scoreValues.size(); i++) {
+    JSONObject score = scoreValues.getJSONObject(i);
+    //hScore = score.getInt("score");
+    //name = score.getString("name");
+    //if (hScore > fillerScore) {
+    //  fillerScore = hScore;
+    //}
+    //hScoreArray[i][0] = str(hScore);
+    //hScoreArray[i][1] = name;
+    if (hScore > fillerScore) {
+     fillerScore = hScore;
+     //hScoreArray[i][1].remove();
+    }
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }  
 
   
   noStroke();
@@ -158,16 +185,12 @@ void draw() {
     //background(245, 30, 50);
     image(img, 0, 0, 500, 500);
     text("High Scores", 250, 50);
-    for (int i = 0; i < scoreValues.size(); i++) {
-      JSONObject score = scoreValues.getJSONObject(i);
-      int hScore = score.getInt("score");
-      String name = score.getString("name");
+
       stroke(12);
       textSize(0);
       textFont(courier);
       textAlign(CENTER, CENTER);
-      text(hScore + " - " + name, 250, 100 + i*25);
-    }
+      text(hScore + " - " + name, 250, 100 + 25);
   }
   // Ship Select Menu
   if (!StartScreen && ShipSelect == true){
@@ -522,6 +545,16 @@ void draw() {
     fill(255);
     text("YOU WIN!", width/2, height/2);
     text(score, width/2, height/3);
+    if (delay < 2 ) { 
+      String preset="Name here, then press Enter.";
+      String op1s = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
+      if (op1s != null) {
+        name = op1s;
+      }
+      delay += 2;
+    }
+    scoreArray.append(score);
+    nameScoreArray.append(name);
     if (mousePressed == true){
       exit();
     }
