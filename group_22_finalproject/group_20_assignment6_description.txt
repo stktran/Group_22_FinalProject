@@ -1,0 +1,14 @@
+GUI, Player movement, Start/End Screen, Player Weapon, Music - Tristen Head tmh2566
+Enemy Bullets(couldn’t get working correctly so we plan to save it for final), Enemy Patterns, Falling star background, and enemy shield - Steven Tran skt522
+Sprites, Enemy patterns, Enemy movement, Enemy health - Ernie Forzano eaf692
+The sprites came from an artist called MILLIONTH VECTOR. 
+
+The point of the game is to go through the levels and defeat all of the enemy ships without dying first. The first thing is the start screen with the "starfox" theme music. Once clicking start it takes you to the first level. The enemy has a timer that waits a minute before appearing the screen. Each time the player hits an enemy their score increases by 100. The first enemy has health of 3 as an introductory level. From then on, their is an increase of difficulty through more enemies or increased health of the enemies. We changed the formations of the enemies to make it more difficult as the levels go on. There are 5 different levels. The 5th level is with a Boss with health 15 and two smaller ships with 5 health. We found that people were easily able to kill the enemies if they only were shot once. We included a falling stars background and whenever enemies are attacked they have a shield quickly appear in front of them (its VERY fast). Also another note, Tristen worked extremely hard on this project and ended up doing much of the work so most of the credit should go to him. Ernie has done quite a large share as well and we plan to incorporate this game into our final project and hope we can successfully finish the game to how we want the game to look when its finalized.  
+
+There is a BUTTON class, which creates and initiates the first START button to enter the game. 
+There is a TIMER class, which is used to determine when to launch the first enemy. 
+There is a BUTTON RECT, which extends the button class to create the start button. 
+There is a GUI class, which controls all of the important information such as: level, score, lives, and player health. 
+There is a VEHICLE class that controls the main player with the arrow keys. 
+There is an ENEMY class that moves across the screen, and an enemy array list that adds new enemies for each level and keeps track of the enemy healths and whether or not the enemies were hit. 
+There is a function evalCollisions(), which determines: which enemy gets hit, handles the number of bullets, prevents the bullets from firing to repetiviely, and updates whether to subtract enemy health.
