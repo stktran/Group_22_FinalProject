@@ -69,11 +69,11 @@ Timer t1;
 //high score
 IntList scoreArray;
 StringList nameScoreArray;
-JSONArray scoreValues;
-int hScore;
-int fillerScore = 0;
+Table scoreTable;
 String name = "";
 int delay = 1;
+int tableCounter = 1;
+int scoreDelay = 1;
 
 // Arrays of varaibles
 ArrayList <Bullet> bullets;
@@ -113,27 +113,14 @@ void setup() {
   //high score loading
   scoreArray = new IntList();
   nameScoreArray = new StringList();
-  scoreValues = loadJSONArray("highscores.json");
-  for (int i = 0; i < scoreValues.size(); i++) {
-    JSONObject score = scoreValues.getJSONObject(i);
-    //hScore = score.getInt("score");
-    //name = score.getString("name");
-    //if (hScore > fillerScore) {
-    //  fillerScore = hScore;
-    //}
-    //hScoreArray[i][0] = str(hScore);
-    //hScoreArray[i][1] = name;
-    if (hScore > fillerScore) {
-     fillerScore = hScore;
-     //hScoreArray[i][1].remove();
-    }
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }  
+  scoreTable = loadTable("highscores.csv", "header");
+  scoreTable.sort(0);
+  try {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+  }
 
   
   noStroke();
@@ -183,14 +170,23 @@ void draw() {
   //High score menu
   if (!StartScreen && highScore == true) {
     //background(245, 30, 50);
-    image(img, 0, 0, 500, 500);
-    text("High Scores", 250, 50);
-
-      stroke(12);
-      textSize(0);
-      textFont(courier);
-      textAlign(CENTER, CENTER);
-      text(hScore + " - " + name, 250, 100 + 25);
+    if (scoreDelay < 2) {
+      image(img, 0, 0, 500, 500);
+      text("High Scores", 250, 50);
+      for (TableRow row : scoreTable.rows()) {
+        if (row != null) { 
+          int hScore = row.getInt("Score");
+          String pname = row.getString("Name");
+          stroke(12);
+          textSize(6);
+          textFont(courier);
+          textAlign(CENTER, CENTER);
+          text(hScore + " - " + pname, 250, 100 + tableCounter*25);
+          tableCounter += 1;
+        }
+      }
+      scoreDelay = 10;
+    }
   }
   // Ship Select Menu
   if (!StartScreen && ShipSelect == true){
@@ -553,8 +549,10 @@ void draw() {
       }
       delay += 2;
     }
-    scoreArray.append(score);
-    nameScoreArray.append(name);
+    TableRow newRow = scoreTable.addRow();
+    newRow.setInt("Score", score);
+    newRow.setString("Name", name);
+    saveTable(scoreTable, "data/highscores.csv");
     if (mousePressed == true){
       exit();
     }
