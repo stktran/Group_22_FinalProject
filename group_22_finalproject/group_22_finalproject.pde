@@ -20,6 +20,24 @@ ButtonRect blue;
 ButtonRect orange;
 ButtonRect green;
 
+///PS3 Controller
+import org.gamecontrolplus.gui.*;
+import org.gamecontrolplus.*;
+import net.java.games.input.*;
+ControlIO control;
+Configuration config;
+ControlDevice gpad;
+float shipPosX, shipPosY;
+int startCntr = 0;
+boolean startSelect = false;
+boolean scoresSelect = false;
+boolean mover = false;
+boolean blueRect = false;
+boolean orangeRect = false;
+boolean greenRect = false;
+
+
+
 // Gui Buttons 
 ButtonRect rect;
 ButtonRect hScoreButton;
@@ -90,6 +108,15 @@ IntList deadEnemyBullets;
 void setup() {
   size(500,500);
   
+  // Initialise the ControlIO
+  control = ControlIO.getInstance(this);
+  // Find a device that matches the configuration file
+  gpad = control.getMatchedDevice("gamepad1");
+  if (gpad == null) {
+    println("No suitable device configured");
+    System.exit(-1); // End the program NOW!
+  }
+  
   //ship images
   img = loadImage("home.jpg");
   ship = loadImage("blueship3.png");
@@ -102,15 +129,15 @@ void setup() {
   titleFont = loadFont("BankGothicBT-Medium-80.vlw");
   textFont(courier);
   textAlign(CENTER);
-  blue = new ButtonRect(20,150,150,200, color(140), color(0));
-  orange = new ButtonRect(175,150,150,200, color(140), color(0));
-  green = new ButtonRect(330,150,150,200, color(140), color(0));
+  blue = new ButtonRect(50, 150, 100, 200, color(0, 175, 244), color(0));
+  orange = new ButtonRect(200, 150, 100, 200, color(0, 175, 244), color(0));
+  green = new ButtonRect(350, 150, 100, 200, color(0, 175, 244), color(0));
   mute = new ButtonRect(180,150,140,60, color(140), color(110));
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
-  
   //high score loading
+<<<<<<< Updated upstream
   scoreArray = new IntList();
   nameScoreArray = new StringList();
   scoreTable = loadTable("highscores.csv", "header");
@@ -123,6 +150,9 @@ void setup() {
   }
 
   
+=======
+  scoreValues = loadJSONArray("highscores.json");
+>>>>>>> Stashed changes
   noStroke();
   
   //HUD and player
@@ -131,8 +161,9 @@ void setup() {
   
   //sound
   sample = new SoundFile(this, "combine.mp3");
-  sample.loop();
+  //sample.loop();
   pew = new SoundFile(this, "ATST.wav");
+  
   //game mechanics
   t1 = new Timer(3500); 
   bullets = new ArrayList();
@@ -142,10 +173,24 @@ void setup() {
   deadBullets = new IntList();
   deadEnemies = new IntList();
   deadEnemyBullets = new IntList();
+  
+  
 }
 
 void draw() {
   //open start screen if game hasn't been started
+  boolean firePressed = gpad.getButton("FIRE").pressed();
+  boolean upCONT = gpad.getButton("UP").pressed();
+  boolean downCONT = gpad.getButton("DOWN").pressed();
+  boolean leftCONT = gpad.getButton("LEFT").pressed();
+  boolean rightCONT = gpad.getButton("RIGHT").pressed();
+  boolean startPressed = gpad.getButton("START").pressed();
+  boolean xPressed = gpad.getButton("XBUTTON").pressed();
+
+  shipPosX =  0.9f * map(gpad.getSlider("XPOS").getValue(), -1, 1, -playerPosX, playerPosY);
+  shipPosY =  0.9f * map(gpad.getSlider("YPOS").getValue(), -1, 1, -playerPosX, playerPosY);
+  //println("X: " + shipPosX);
+ // println("Y: " + shipPosY);
   if (StartScreen == true) {
     if (rectPressed) {
       background(255);
@@ -166,6 +211,43 @@ void draw() {
     textFont(titleFont);
     fill(232,236,40,200);
     text("StarSpace", width/2, height/4+50);
+    if ((upPressed == true || upCONT == true || downPressed == true || downCONT == true)){
+      if (startSelect == false && scoresSelect == false){
+        startSelect = true;
+      } else if(startSelect == true && scoresSelect == false){
+        startSelect = false;
+        scoresSelect = true;
+      } else if(startSelect == false && scoresSelect == true){
+        startSelect = true;
+        scoresSelect = false;
+      }     
+    }
+    if (startSelect == true && scoresSelect == false){
+          rect.isMouseOver = true;
+          noFill();
+          strokeWeight(5);
+          stroke(0, 175, 244);
+          rect(180,350,140,60);
+          noStroke();
+          mover = false; 
+      }else if (startSelect == false && scoresSelect == true){
+          hScoreButton.isMouseOver = true;
+          noFill();
+          strokeWeight(5);
+          stroke(0, 175, 244);
+          rect(150, 420, 200, 60);
+          noStroke();
+      }
+    if ((xPressed == true || startPressed == true) && (startSelect == true && scoresSelect == false)){
+        StartScreen = false;
+        ShipSelect = true;
+    }
+    if ((xPressed == true || startPressed == true) && (startSelect == false && scoresSelect == true)){
+      StartScreen = true;
+      ShipSelect = false;  
+     }
+    delay(100);
+    
   }
   //High score menu
   if (!StartScreen && highScore == true) {
@@ -212,9 +294,69 @@ void draw() {
       text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 50, 300, 500);
     }
     
+
+    if (leftPressed == true || leftCONT == true){
+      if (blueRect == false && orangeRect == false && greenRect == false){
+        blueRect = true;
+      } else if (blueRect == true && orangeRect == false && greenRect == false){
+        blueRect = false;
+        greenRect = true;
+      } else if (blueRect == false && orangeRect == false && greenRect == true){
+        greenRect = false;
+        orangeRect = true;
+      }  else if (blueRect == false && orangeRect == true && greenRect == false){
+        orangeRect = false;
+        blueRect = true;
+      }
+    }
+    if (downPressed == true || rightCONT == true){
+      if (blueRect == false && orangeRect == false && greenRect == false){
+        blueRect = true;
+      } else if (blueRect == true && orangeRect == false && greenRect == false){
+        blueRect = false;
+        orangeRect = true;
+      } else if (blueRect == false && orangeRect == false && greenRect == true){
+        greenRect = false;
+        blueRect = true;
+      }  else if (blueRect == false && orangeRect == true && greenRect == false){
+        orangeRect = false;
+        greenRect = true;
+      }
+    }
+    if (blueRect == true){
+          text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 50, 300, 500);
+          fill(0, 175, 244);
+          rect(50, 150, 100, 200);
+          mover = false; 
+      }else if (orangeRect == true){
+          text("The Orange You Glad ship has multiple shots", 100, 50, 300, 500);
+          fill(0, 175, 244);
+          rect(200, 150, 100, 200);
+      }else if (greenRect == true){
+          text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 50, 300, 500);
+          //noFill();
+          //strokeWeight(5);
+          fill(0, 175, 244);
+          rect(350, 150, 100, 200);
+          //noStroke();
+      }
+    if ((xPressed == true || startPressed == true) && (blueRect == true)){
+      blueSelect = true;
+      ShipSelect = false;
+    }
+    if ((xPressed == true || startPressed == true) && (orangeRect == true)){
+      orangeSelect = true;
+      ShipSelect = false; 
+     }
+     if ((xPressed == true || startPressed == true) && (greenRect == true)){
+      greenSelect = true;
+      ShipSelect = false;
+     }
     image(ship, 50, 150, 100, 200);
     image(orangeship, 200, 150, 100, 200);
     image(greenship, 350, 150, 100, 200);
+    delay(100);
+     
   }
   //if game has been started, they havnt quit and they havn't won
   if (!StartScreen && !Quit && !Victory && !ShipSelect && !highScore) {
@@ -279,19 +421,19 @@ void draw() {
       imageMode(CENTER);
       
       //improved player actions allows multiple commands at once
-      if (upPressed == true) {
+      if (upPressed == true || upCONT == true) {
         player.moveUp();
-      }if(downPressed == true) {
+      }if(downPressed == true || downCONT == true) {
         player.moveDown();
-      }if(leftPressed == true) {
+      }if(leftPressed == true || leftCONT == true) {
         player.moveLeft();
-      }if(rightPressed == true) {
+      }if(rightPressed == true || rightCONT == true) {
         player.moveRight();
       }
       playerPosX = player.getX();
       playerPosY = player.getY();
       //fire
-      if(mouseClicked == true) {
+      if(mouseClicked == true || firePressed == true) {
         Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
         bullets.add(temp);
       }
@@ -776,7 +918,6 @@ void mousePressed(){
     }
   }
  
-
   //ship selection
   if (!StartScreen && ShipSelect == true){
     if(blue.isPressed()){
