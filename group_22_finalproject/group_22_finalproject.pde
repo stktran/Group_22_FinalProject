@@ -107,17 +107,13 @@ void setup() {
   size(500,500);
   
   // Initialize the ControlIO
-  JOptionPane.showMessageDialog(frame, "If you have a USB controlled device consult README to configure. If not press Exit Game to use mouse and keyboard.");
+  String message = "This game was developed with a PS3 controller."+ "\n" +"If you have a USB controlled device consult README to configure." + "\n" +"If not press Exit Game to use mouse and keyboard.";
+  JOptionPane.showMessageDialog(frame, message);
   control = ControlIO.getInstance(this);
   // Find a device that matches the configuration file
   gpad = control.getMatchedDevice("gamepad1");
  
-  /*
-  if (gpad == null) {
-    println("No suitable device configured");
-    //System.exit(-1); // End the program NOW!
-  }
-  */
+
   
   // images initilization
   img = loadImage("home.jpg");
