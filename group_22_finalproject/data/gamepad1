@@ -1,6 +1,4 @@
 Game Controller
-XPOS	X Position	3	SLIDER	x	0	1.0	0.0
-YPOS	Y Position	3	SLIDER	y	0	1.0	0.0
 START	Start	1	BUTTON	3	0	0.0	0.0
 UP	Up	1	BUTTON	4	0	0.0	0.0
 RIGHT	Right	1	BUTTON	5	0	0.0	0.0

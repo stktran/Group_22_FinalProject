@@ -21,13 +21,13 @@ ButtonRect orange;
 ButtonRect green;
 
 ///PS3 Controller
+import javax.swing.*; 
 import org.gamecontrolplus.gui.*;
 import org.gamecontrolplus.*;
 import net.java.games.input.*;
 ControlIO control;
 Configuration config;
 ControlDevice gpad;
-float shipPosX, shipPosY;
 
 // Menu Select Buttons
 boolean startSelect = false;
@@ -39,8 +39,6 @@ boolean greenRect = false;
 boolean quitRect = false;
 boolean contRect = false;
 boolean muteRect = false;
-
-
 
 // Gui Buttons 
 ButtonRect rect;
@@ -100,7 +98,6 @@ ArrayList <Enemy> enemies;
 ArrayList <Enemy> boss;
 ArrayList <Bullet> enemybullets;
 ArrayList <enemyShield> enemyshield;
-
 int counter = 1;
 IntList deadBullets;
 IntList deadEnemies;
@@ -109,16 +106,20 @@ IntList deadEnemyBullets;
 void setup() {
   size(500,500);
   
-  // Initialise the ControlIO
+  // Initialize the ControlIO
+  JOptionPane.showMessageDialog(frame, "If you have a USB controlled device consult README to configure. If not press Exit Game to use mouse and keyboard.");
   control = ControlIO.getInstance(this);
   // Find a device that matches the configuration file
   gpad = control.getMatchedDevice("gamepad1");
+ 
+  /*
   if (gpad == null) {
     println("No suitable device configured");
-    System.exit(-1); // End the program NOW!
+    //System.exit(-1); // End the program NOW!
   }
+  */
   
-  //ship images
+  // images initilization
   img = loadImage("home.jpg");
   ship = loadImage("blueship3.png");
   orangeship = loadImage("orangeship.png");
@@ -168,18 +169,11 @@ void setup() {
 
 void draw() {
   //open start screen if game hasn't been started
-  boolean firePressed = gpad.getButton("FIRE").pressed();
-  boolean upCONT = gpad.getButton("UP").pressed();
-  boolean downCONT = gpad.getButton("DOWN").pressed();
-  boolean leftCONT = gpad.getButton("LEFT").pressed();
-  boolean rightCONT = gpad.getButton("RIGHT").pressed();
-  boolean startPressed = gpad.getButton("START").pressed();
-  boolean xPressed = gpad.getButton("XBUTTON").pressed();
-
-  shipPosX =  0.9f * map(gpad.getSlider("XPOS").getValue(), -1, 1, -playerPosX, playerPosY);
-  shipPosY =  0.9f * map(gpad.getSlider("YPOS").getValue(), -1, 1, -playerPosX, playerPosY);
-  //println("X: " + shipPosX);
- // println("Y: " + shipPosY);
+  if (gpad != null) {
+    
+  }
+    
+  
   if (StartScreen == true) {
     if (rectPressed) {
       background(255);
@@ -200,26 +194,34 @@ void draw() {
     textFont(titleFont);
     fill(232,236,40,200);
     text("StarSpace", width/2, height/4+50);
-    if ((upPressed == true || upCONT == true || downPressed == true || downCONT == true)){
-      if (startSelect == false && scoresSelect == false){
-        selectmove.play();
-        startSelect = true;
+    if (gpad != null) {
+      //boolean firePressed = gpad.getButton("FIRE").pressed();
+      boolean upCONT = gpad.getButton("UP").pressed();
+      boolean downCONT = gpad.getButton("DOWN").pressed();
+     // boolean leftCONT = gpad.getButton("LEFT").pressed();
+     // boolean rightCONT = gpad.getButton("RIGHT").pressed();
+      boolean startPressed = gpad.getButton("START").pressed();
+      boolean xPressed = gpad.getButton("XBUTTON").pressed();
+      if ((upPressed == true || upCONT == true || downPressed == true || downCONT == true)){
+        if (startSelect == false && scoresSelect == false){
+          selectmove.play();
+          startSelect = true;
       } else if(startSelect == true && scoresSelect == false){
-        selectmove.play();
-        startSelect = false;
-        scoresSelect = true;
+          selectmove.play();
+          startSelect = false;
+          scoresSelect = true;
       } else if(startSelect == false && scoresSelect == true){
-        selectmove.play();
-        startSelect = true;
-        scoresSelect = false;
+          selectmove.play();
+          startSelect = true;
+          scoresSelect = false;
       }     
     }
     if (startSelect == true && scoresSelect == false){
-          rect.isMouseOver = true;
-          noFill();
-          strokeWeight(5);
-          stroke(0, 175, 244);
-          rect(180,350,140,60);
+      rect.isMouseOver = true;
+      noFill();
+      strokeWeight(5);
+      stroke(0, 175, 244);
+      rect(180,350,140,60);
           noStroke();
           mover = false; 
       }else if (startSelect == false && scoresSelect == true){
@@ -241,7 +243,7 @@ void draw() {
       ShipSelect = false;  
      }
     delay(100);
-    
+    }
   }
 
   //High score menu
@@ -284,7 +286,14 @@ void draw() {
       text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 50, 300, 500);
     }
     
-
+    if (gpad != null) {
+      //boolean firePressed = gpad.getButton("FIRE").pressed();
+     // boolean upCONT = gpad.getButton("UP").pressed();
+      //boolean downCONT = gpad.getButton("DOWN").pressed();
+      boolean leftCONT = gpad.getButton("LEFT").pressed();
+      boolean rightCONT = gpad.getButton("RIGHT").pressed();
+      boolean startPressed = gpad.getButton("START").pressed();
+      boolean xPressed = gpad.getButton("XBUTTON").pressed();
     if (leftPressed == true || leftCONT == true){
       if (blueRect == false && orangeRect == false && greenRect == false){
         selectmove.play();
@@ -320,6 +329,7 @@ void draw() {
         orangeRect = false;
         greenRect = true;
       }
+    
     }
     if (blueRect == true){
           text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 50, 300, 500);
@@ -353,6 +363,7 @@ void draw() {
        greenSelect = true;
       ShipSelect = false;
      }
+    }
     image(ship, 50, 150, 100, 200);
     image(orangeship, 200, 150, 100, 200);
     image(greenship, 350, 150, 100, 200);
@@ -410,7 +421,14 @@ void draw() {
       textFont(titleFont);
       text("StarSpace", width/2, height/4);
       
- 
+      if (gpad != null) {
+        //boolean firePressed = gpad.getButton("FIRE").pressed();
+        boolean upCONT = gpad.getButton("UP").pressed();
+        boolean downCONT = gpad.getButton("DOWN").pressed();
+        //boolean leftCONT = gpad.getButton("LEFT").pressed();
+        //boolean rightCONT = gpad.getButton("RIGHT").pressed();
+        boolean startPressed = gpad.getButton("START").pressed();
+        boolean xPressed = gpad.getButton("XBUTTON").pressed();
       if (upPressed == true || upCONT == true){
         if (muteRect == false && quitRect == false && contRect == false){
           selectmove.play();
@@ -491,7 +509,7 @@ void draw() {
        }
        
       delay(100);
-     
+      }
     
    
     }else{
@@ -503,7 +521,14 @@ void draw() {
       displayAll();     //updates all bullets on screen            could combine these 2 functions?
       boundaryBullets();//eliminates enemy bullets that reach the edge of the screen
       imageMode(CENTER);
-      
+      if (gpad != null) {
+      boolean firePressed = gpad.getButton("FIRE").pressed();
+      boolean upCONT = gpad.getButton("UP").pressed();
+      boolean downCONT = gpad.getButton("DOWN").pressed();
+      boolean leftCONT = gpad.getButton("LEFT").pressed();
+      boolean rightCONT = gpad.getButton("RIGHT").pressed();
+      boolean startPressed = gpad.getButton("START").pressed();
+      //boolean xPressed = gpad.getButton("XBUTTON").pressed();
       //improved player actions allows multiple commands at once
       if (upPressed == true || upCONT == true) {
         player.moveUp();
@@ -525,13 +550,31 @@ void draw() {
       if (firePressed == true){
         fireweapon = true;
       }
-      if(mouseClicked == true || (fireweapon == true && firePressed == false)) {
+      if((fireweapon == true && firePressed == false)) {
         plaser.play();
         Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
         bullets.add(temp);
         fireweapon = false; 
       }
       
+      }
+      if(mouseClicked == true) {
+        plaser.play();
+        Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
+        bullets.add(temp);
+        fireweapon = false; 
+      }
+      if (upPressed == true) {
+        player.moveUp();
+      }if(downPressed == true) {
+        player.moveDown();
+      }if(leftPressed == true) {
+        player.moveLeft();
+      }if(rightPressed == true) {
+        player.moveRight();
+      }
+      playerPosX = player.getX();
+      playerPosY = player.getY();
       player.display();//draw the player!
 
       //levels!
