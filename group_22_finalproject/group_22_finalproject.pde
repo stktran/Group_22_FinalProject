@@ -63,6 +63,8 @@ int level = 1;
 Gui gui;
 int levelIndicatorTime = 0;
 int ownerMarker = 0;
+int delay1 = 0;
+int numLaserEnemies = 0;
 
 //keys pressed
 boolean upPressed = false;
@@ -558,6 +560,7 @@ void draw() {
             Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(), ownerMarker);
             elaser.play();
             enemybullets.add(ebullet);
+            //println(ownerMarker, grunt.getWeapon());
           }
         }  
         counter += 1;
@@ -584,7 +587,7 @@ void draw() {
         }
         if (numEnemies <= 2 && flag == true){
            println("round 2");
-           Enemy temp = new Enemy(0, 50, 100, 100, 5, "enemyLaser");
+           Enemy temp = new Enemy(0, 50, 100, 100, 5, "cannon");
            Enemy temp2 = new Enemy(100, 50, 100, 100, 5, "enemyLaser");
            enemies.add(temp);
            enemies.add(temp2);
@@ -594,17 +597,32 @@ void draw() {
         }
         if ( enemybullets.size() < numEnemies ) {
           ownerMarker = 0;
+          numLaserEnemies = 0;
           for (Enemy grunt:enemies) {
             skip = false;
+            if (grunt.getWeapon() == "enemyLaser") {
+              numLaserEnemies += 1;
+              //println("ping");
+            }
             for (Bullet eshot:enemybullets) {
               if (eshot.getOwner(ownerMarker)) {
                 skip = true;
               }
             }
             if (!skip) {
-              Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
-              elaser.play();
-              enemybullets.add(ebullet);
+
+              
+              if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                enemybullets.add(ebullet);
+                elaser.play();
+                grunt.fired();
+              }else if (grunt.getWeapon() == "cannon") {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                enemybullets.add(ebullet);
+              }
+              grunt.cool();
+              //println(ownerMarker, grunt.getWeapon(), delay1);
             }
             ownerMarker += 1;
             
@@ -632,7 +650,7 @@ void draw() {
         if (numEnemies <= 3 && flag == true){
            println("round 3");
            Enemy temp = new Enemy(0, 100, 100, 100, 5,"cannon");
-           Enemy temp2 = new Enemy(100, 50, 100, 100, 5,"cannon");
+           Enemy temp2 = new Enemy(100, 50, 100, 100, 5,"enemyLaser");
            Enemy temp3 = new Enemy(200, 100, 100, 100, 5, "enemyLaser");
            enemies.add(temp);
            enemies.add(temp2);
@@ -643,7 +661,11 @@ void draw() {
         } 
         if ( enemybullets.size() < numEnemies ) {
           ownerMarker = 0;
+          numLaserEnemies = 0;
           for (Enemy grunt:enemies) {
+            if (grunt.getWeapon() == "enemyLaser") {
+              numLaserEnemies += 1;
+            }
             skip = false;
             for (Bullet eshot:enemybullets) {
               if (eshot.getOwner(ownerMarker)) {
@@ -651,9 +673,20 @@ void draw() {
               }
             }
             if (!skip) {
-              Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
-              elaser.play();
-              enemybullets.add(ebullet);
+
+              if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+                
+                grunt.fired();
+              }else if ( grunt.getWeapon() == "cannon") {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+              }
+              grunt.cool();
+              //println(ownerMarker, grunt.getWeapon());
             }
             ownerMarker += 1;
             
@@ -702,10 +735,19 @@ void draw() {
               }
             }
             if (!skip) {
-              Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
-              elaser.play();
-              enemybullets.add(ebullet);
-              
+
+              if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+                grunt.fired();
+              }else if ( grunt.getWeapon() == "cannon") {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+              }
+              grunt.cool();
+              //println(ownerMarker, grunt.getWeapon(), delay1);
             }
             ownerMarker += 1;
             
@@ -809,24 +851,28 @@ void boundaryBullets() {
     bcounter += 1;
   }    
   //removes enemy bullets once off screen
-  int ebullCount = -1;
+  int ebullCount = 0;
   //records which bullets need to be removed and builds an array
   for (Bullet ebullet: enemybullets) {
     if (ebullet.getY() > 500) {
-      ebullCount += 1;
+      
       deadEnemyBullets.append(ebullCount);
+      
+      //println(ebullCount, ebullet.getType(), ebullet.getY(), "ping");
     }
+    ebullCount += 1;
   }
   int ebcounter = 0;
   //uses array to eliminate enemy bullets from their array  *overcomes simultaneous reading and erasing error 
   while(deadEnemyBullets.size() >0) {
     //println("num dead bullets",deadEnemyBullets.size(),"num ebullets", enemybullets.size(), "ebcounter", ebcounter,"bullet number", deadEnemyBullets.get(0));
     //fix to the bullet counting error
-    if (deadEnemyBullets.get(0) == 0) {
-      enemybullets.remove(deadEnemyBullets.get(0));
-    }else {
+    //if (deadEnemyBullets.get(0) == 0) {
+    //  enemybullets.remove(deadEnemyBullets.get(0));
+    //}else {
+      //println("removing", deadEnemyBullets.get(0)-ebcounter);
       enemybullets.remove(deadEnemyBullets.get(0)-ebcounter);//////
-    }
+   // }
     deadEnemyBullets.remove(0);
     ebcounter += 1;
   }

@@ -5,6 +5,7 @@ class Enemy{
   String weapon;
   float maxHealth;
   boolean forward = true;
+  int cooldown = 25;
   Enemy(int _x, int _y, int _w, int _h, int _health, String _weapon) {
     x = _x;
     y = _y;
@@ -47,6 +48,15 @@ class Enemy{
   }
   void healthDamage(){
     health = health - 1;
+  }
+  void cool() {
+    cooldown -= 1;
+  }
+  void fired() {
+    cooldown = 25;
+  }
+  public Integer getCooldown() {
+    return cooldown;
   }
   public Integer getX() {
     return x;

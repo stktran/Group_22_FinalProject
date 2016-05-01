@@ -16,6 +16,7 @@ class Bullet {
   void display() {
     
     if (type == "cannon") {
+      //println("cannon", y);
       fill(255);
       rect(x,y,5,10);//bullet appearance
     }
@@ -45,19 +46,16 @@ class Bullet {
       }
     }
     else if (type == "enemyLaser"){
-      //println(y);
+      //println("laser",y);
       fill(255);
-      fill(255,0,0);
-      if (y < 470) {
-        y+= 30;
-      }
+      //fill(255,0,0);
       if (leadTime <= 10) {
         fill(255);
         //fill(0,255,0);
         rectMode(CORNERS);
         rect(x,y,x+5,originY);
         rectMode(CENTER);
-      }else if (leadTime < 35) {
+      }else if (leadTime < 15) {
         //print("ping");
         originY += rearTime;
         fill(255);
@@ -67,9 +65,10 @@ class Bullet {
         rearTime += 20;
       }else {
 
-        y=505;
+        
 
       }
+      
     }
     else if (type == "boss"){
       //println(y);
@@ -99,7 +98,7 @@ class Bullet {
         rearTime += 10;
       }else {
 
-        y=+80;
+        //y=+80;
 
       }
     }
@@ -111,8 +110,14 @@ class Bullet {
       if (direction == "player") {
         y -= 6;
       } else if (direction == "enemy") {
-        y += 6;
+        y += 8;
+        //println(y);
       }
+    }else if (type == "enemyLaser") {
+      //if (y < 480) {
+        y+= 30;
+      //}
+      
     }
     
   }
@@ -123,7 +128,9 @@ class Bullet {
   public Integer getY() {
     return y;
   }
-  
+  public String getType() {
+    return type;
+  }
   public Boolean getOwner(int grunt) {
     if (grunt == owner) {
       return true;
