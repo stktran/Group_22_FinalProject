@@ -28,13 +28,17 @@ ControlIO control;
 Configuration config;
 ControlDevice gpad;
 float shipPosX, shipPosY;
-int startCntr = 0;
+
+// Menu Select Buttons
 boolean startSelect = false;
 boolean scoresSelect = false;
 boolean mover = false;
 boolean blueRect = false;
 boolean orangeRect = false;
 boolean greenRect = false;
+boolean quitRect = false;
+boolean contRect = false;
+boolean muteRect = false;
 
 
 
@@ -66,6 +70,7 @@ boolean downPressed = false;
 boolean rightPressed = false;
 boolean leftPressed = false;
 boolean mouseClicked = false;
+boolean fireweapon = false;
 
 //enemies 
 int numEnemies;
@@ -76,22 +81,16 @@ PFont courier, titleFont;
 
 //declare sound variables
 import processing.sound.*;
-SoundFile sample, pew;
-
-//grabbing java input library
-import javax.swing.*;
+SoundFile sample, pew, selectmove, select, elaser, plaser;
 
 //time variables
 Timer t1;
 
 //high score
-IntList scoreArray;
-StringList nameScoreArray;
-Table scoreTable;
-String name = "";
-int delay = 1;
-int tableCounter = 1;
-int scoreDelay = 1;
+String[] hScoreArray;
+JSONArray scoreValues;
+int hScore;
+String name;
 
 // Arrays of varaibles
 ArrayList <Bullet> bullets;
@@ -137,22 +136,7 @@ void setup() {
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
   //high score loading
-<<<<<<< Updated upstream
-  scoreArray = new IntList();
-  nameScoreArray = new StringList();
-  scoreTable = loadTable("highscores.csv", "header");
-  scoreTable.sort(0);
-  try {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-  }
-  catch (Exception e) {
-    e.printStackTrace();
-  }
-
-  
-=======
-  scoreValues = loadJSONArray("highscores.json");
->>>>>>> Stashed changes
+  //scoreValues = loadJSONArray("highscores.json");
   noStroke();
   
   //HUD and player
@@ -161,9 +145,12 @@ void setup() {
   
   //sound
   sample = new SoundFile(this, "combine.mp3");
-  //sample.loop();
+  sample.loop();
   pew = new SoundFile(this, "ATST.wav");
-  
+  select = new SoundFile(this, "SoundMover.wav");
+  selectmove = new SoundFile (this, "SpaceSelect.wav");
+  plaser = new SoundFile (this, "PlayerFire.wav");
+  elaser = new SoundFile (this, "EnemyFire.wav");
   //game mechanics
   t1 = new Timer(3500); 
   bullets = new ArrayList();
@@ -213,11 +200,14 @@ void draw() {
     text("StarSpace", width/2, height/4+50);
     if ((upPressed == true || upCONT == true || downPressed == true || downCONT == true)){
       if (startSelect == false && scoresSelect == false){
+        selectmove.play();
         startSelect = true;
       } else if(startSelect == true && scoresSelect == false){
+        selectmove.play();
         startSelect = false;
         scoresSelect = true;
       } else if(startSelect == false && scoresSelect == true){
+        selectmove.play();
         startSelect = true;
         scoresSelect = false;
       }     
@@ -239,35 +229,33 @@ void draw() {
           noStroke();
       }
     if ((xPressed == true || startPressed == true) && (startSelect == true && scoresSelect == false)){
+        select.play();
         StartScreen = false;
         ShipSelect = true;
     }
     if ((xPressed == true || startPressed == true) && (startSelect == false && scoresSelect == true)){
+      select.play();
       StartScreen = true;
       ShipSelect = false;  
      }
     delay(100);
     
   }
+
   //High score menu
   if (!StartScreen && highScore == true) {
     //background(245, 30, 50);
-    if (scoreDelay < 2) {
-      image(img, 0, 0, 500, 500);
-      text("High Scores", 250, 50);
-      for (TableRow row : scoreTable.rows()) {
-        if (row != null) { 
-          int hScore = row.getInt("Score");
-          String pname = row.getString("Name");
-          stroke(12);
-          textSize(6);
-          textFont(courier);
-          textAlign(CENTER, CENTER);
-          text(hScore + " - " + pname, 250, 100 + tableCounter*25);
-          tableCounter += 1;
-        }
-      }
-      scoreDelay = 10;
+    image(img, 0, 0, 500, 500);
+    text("High Scores", 250, 50);
+    for (int i = 0; i < scoreValues.size(); i++) {
+      JSONObject score = scoreValues.getJSONObject(i);
+      int hScore = score.getInt("score");
+      String name = score.getString("name");
+      stroke(12);
+      textSize(0);
+      textFont(courier);
+      textAlign(CENTER, CENTER);
+      text(hScore + " - " + name, 250, 100 + i*25);
     }
   }
   // Ship Select Menu
@@ -297,28 +285,36 @@ void draw() {
 
     if (leftPressed == true || leftCONT == true){
       if (blueRect == false && orangeRect == false && greenRect == false){
+        selectmove.play();
         blueRect = true;
       } else if (blueRect == true && orangeRect == false && greenRect == false){
+        selectmove.play();
         blueRect = false;
         greenRect = true;
       } else if (blueRect == false && orangeRect == false && greenRect == true){
+        selectmove.play();
         greenRect = false;
         orangeRect = true;
-      }  else if (blueRect == false && orangeRect == true && greenRect == false){
+      } else if (blueRect == false && orangeRect == true && greenRect == false){
+        selectmove.play();
         orangeRect = false;
         blueRect = true;
       }
     }
     if (downPressed == true || rightCONT == true){
       if (blueRect == false && orangeRect == false && greenRect == false){
+        selectmove.play();
         blueRect = true;
       } else if (blueRect == true && orangeRect == false && greenRect == false){
+        selectmove.play();
         blueRect = false;
         orangeRect = true;
       } else if (blueRect == false && orangeRect == false && greenRect == true){
+        selectmove.play();
         greenRect = false;
         blueRect = true;
       }  else if (blueRect == false && orangeRect == true && greenRect == false){
+        selectmove.play();
         orangeRect = false;
         greenRect = true;
       }
@@ -327,7 +323,7 @@ void draw() {
           text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 50, 300, 500);
           fill(0, 175, 244);
           rect(50, 150, 100, 200);
-          mover = false; 
+          //mover = false; 
       }else if (orangeRect == true){
           text("The Orange You Glad ship has multiple shots", 100, 50, 300, 500);
           fill(0, 175, 244);
@@ -341,15 +337,18 @@ void draw() {
           //noStroke();
       }
     if ((xPressed == true || startPressed == true) && (blueRect == true)){
+      select.play();
       blueSelect = true;
       ShipSelect = false;
     }
     if ((xPressed == true || startPressed == true) && (orangeRect == true)){
+      select.play();
       orangeSelect = true;
       ShipSelect = false; 
      }
      if ((xPressed == true || startPressed == true) && (greenRect == true)){
-      greenSelect = true;
+       select.play();
+       greenSelect = true;
       ShipSelect = false;
      }
     image(ship, 50, 150, 100, 200);
@@ -408,7 +407,90 @@ void draw() {
       text("Continue", width/2,height/2+140);
       textFont(titleFont);
       text("StarSpace", width/2, height/4);
+      
+ 
+      if (upPressed == true || upCONT == true){
+        if (muteRect == false && quitRect == false && contRect == false){
+          selectmove.play();
+          muteRect = true;
+      } else if (muteRect == true && quitRect == false && contRect == false){
+          selectmove.play();
+          muteRect = false;
+          contRect = true;
+      } else if (muteRect == false && quitRect == false && contRect == true){
+          selectmove.play();
+          contRect = false;
+          quitRect = true;
+      } else if (muteRect == false && quitRect == true && contRect == false){
+          selectmove.play();
+          quitRect = false;
+          muteRect = true;
+      }
+    }  
 
+      if (downPressed == true || downCONT == true){
+        if (muteRect == false && quitRect == false && contRect == false){
+          selectmove.play();
+          muteRect = true;
+      } else if (muteRect == true && quitRect == false && contRect == false){
+          selectmove.play();
+          muteRect = false;
+          quitRect = true;
+      } else if (muteRect == false && quitRect == false && contRect == true){
+          selectmove.play();
+          contRect = false;
+          muteRect = true;
+      } else if (muteRect == false && quitRect == true && contRect == false){
+          selectmove.play();
+          quitRect = false;
+          contRect = true;
+      }
+    }  
+    
+      if (muteRect == true){
+        noFill();
+        strokeWeight(5);
+        stroke(0, 175, 244);
+        rect(180,150,140,60);
+        noStroke();
+      }else if (quitRect == true){
+        noFill();
+        strokeWeight(5);
+        stroke(0, 175, 244);
+        rect(180,250,140,60);
+        noStroke();
+      }else if (contRect == true){
+        noFill();
+        strokeWeight(5);
+        stroke(0, 175, 244);
+        rect(180,350,140,60);
+        noStroke();
+      }
+      if ((xPressed == true || startPressed == true) && (muteRect == true && mutePressed == false)){
+        select.play();
+        sample.amp(0);
+        mutePressed = true;
+        println("mute1");
+        delay(100);
+      } else if ((xPressed == true || startPressed == true) && (muteRect == true && mutePressed == true)){
+        select.play();
+        sample.amp(1);
+        mutePressed = false;
+        println("mute2");
+        delay(100);
+      }
+      if ((xPressed == true || startPressed == true) && (quitRect == true)){
+        select.play();
+        Quit = true;
+       }
+       if ((xPressed == true || startPressed == true) && (contRect == true)){
+         select.play();
+         PauseScreen = false;
+       }
+       
+      delay(100);
+     
+    
    
     }else{
       //gameplay
@@ -432,10 +514,20 @@ void draw() {
       }
       playerPosX = player.getX();
       playerPosY = player.getY();
+      
+      // Pause Menu 
+      if (startPressed == true && !StartScreen){
+      PauseScreen = !PauseScreen;
+      }
       //fire
-      if(mouseClicked == true || firePressed == true) {
+      if (firePressed == true){
+        fireweapon = true;
+      }
+      if(mouseClicked == true || (fireweapon == true && firePressed == false)) {
+        plaser.play();
         Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
         bullets.add(temp);
+        fireweapon = false; 
       }
       
       player.display();//draw the player!
@@ -464,6 +556,7 @@ void draw() {
         if ( enemybullets.size() < numEnemies ) {
           for (Enemy grunt:enemies) {
             Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(), ownerMarker);
+            elaser.play();
             enemybullets.add(ebullet);
           }
         }  
@@ -510,6 +603,7 @@ void draw() {
             }
             if (!skip) {
               Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+              elaser.play();
               enemybullets.add(ebullet);
             }
             ownerMarker += 1;
@@ -558,6 +652,7 @@ void draw() {
             }
             if (!skip) {
               Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+              elaser.play();
               enemybullets.add(ebullet);
             }
             ownerMarker += 1;
@@ -608,7 +703,9 @@ void draw() {
             }
             if (!skip) {
               Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+              elaser.play();
               enemybullets.add(ebullet);
+              
             }
             ownerMarker += 1;
             
@@ -649,6 +746,7 @@ void draw() {
       if (enemybullets.size() < numEnemies ) {
           for (Enemy grunt:enemies) {
             Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+            elaser.play();
             enemybullets.add(ebullet);
           }
          /* for (Enemy bos:boss) {
@@ -683,18 +781,6 @@ void draw() {
     fill(255);
     text("YOU WIN!", width/2, height/2);
     text(score, width/2, height/3);
-    if (delay < 2 ) { 
-      String preset="Name here, then press Enter.";
-      String op1s = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
-      if (op1s != null) {
-        name = op1s;
-      }
-      delay += 2;
-    }
-    TableRow newRow = scoreTable.addRow();
-    newRow.setInt("Score", score);
-    newRow.setString("Name", name);
-    saveTable(scoreTable, "data/highscores.csv");
     if (mousePressed == true){
       exit();
     }
@@ -775,6 +861,7 @@ void evalCollisions() {
   int bullCount = -1;
   //cycle through player bullets
   for(Bullet temp : bullets ){
+    
     bullCount += 1;
     int bx = temp.getX();
     int by = temp.getY();
