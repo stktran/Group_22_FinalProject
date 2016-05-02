@@ -6,6 +6,8 @@ class Bullet {
   String type;
   int leadTime = 0;
   int rearTime = 0;
+  int burstX = x;
+  //boolean burstX = true;
   Bullet(int _x, int _y, String _type, int _owner) {
     x = _x;
     y = _y;
@@ -14,16 +16,20 @@ class Bullet {
     originY = _y;
   }
   void display() {
-    
     if (type == "cannon") {
       //println("cannon", y);
       fill(255);
       rect(x,y-20,5,10);//bullet appearance
     }
     else if (type == "burst") {
-      //println("cannon", y);
+      fill(0, 200, 175);
+      rect(x,y,10,20);
       fill(255);
-      triangle(x,y,30,5,x+10,y+10);//bullet appearance
+      rect(burstX,y,10,10);
+      //rect(burstX,y,burstX,10);
+      //triangle(x,y,x+50, y+10, x+10, y+10);//bullet appearance
+      //rect(x+100,x+100,15, 15);//bullet appearance
+      //ellipse(x+100,y,x+10,y);
 
     }
     else if (type == "laser"){
@@ -120,7 +126,23 @@ class Bullet {
       }
       
     }else if (type == "burst") {
-        y-= 8;
+      
+          burstX = x + int(sin(y)*50);
+          y -= 4;
+          
+        
+        /*
+       if (burstX == true) {
+        y -= 10;
+        x += 50;
+        burstX = false;
+        
+       }else if (burstX == false){
+         y -= 10;
+         x -= 50;
+         burstX = true;
+        }
+        */
       
     }else if (type == "enemyLaser") {
       //if (y < 480) {
