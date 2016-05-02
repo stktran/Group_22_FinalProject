@@ -87,11 +87,10 @@ import javax.swing.*;
 Timer t1;
 
 //high score
-IntList scoreArray;
-StringList nameScoreArray;
 Table scoreTable;
 String name = "";
-int delay = 1;
+int victoryDelay = 1;
+int gameOverDelay = 1;
 int tableCounter = 1;
 int scoreDelay = 1;
 
@@ -138,10 +137,8 @@ void setup() {
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
+  
   //high score loading
-<<<<<<< Updated upstream
-  scoreArray = new IntList();
-  nameScoreArray = new StringList();
   scoreTable = loadTable("highscores.csv", "header");
   scoreTable.sort(0);
   try {
@@ -152,9 +149,6 @@ void setup() {
   }
 
   
-=======
-  scoreValues = loadJSONArray("highscores.json");
->>>>>>> Stashed changes
   noStroke();
   
   //HUD and player
@@ -262,9 +256,9 @@ void draw() {
           int hScore = row.getInt("Score");
           String pname = row.getString("Name");
           stroke(12);
-          textSize(6);
           textFont(courier);
           textAlign(CENTER, CENTER);
+          textSize(20);
           text(hScore + " - " + pname, 250, 100 + tableCounter*25);
           tableCounter += 1;
         }
@@ -371,6 +365,19 @@ void draw() {
       fill(255);
       text("Game Over",width/2,height/2);
       text(score,width/2,height/3);
+      if (gameOverDelay < 2) {
+        String preset = "Enter your name here, then press Enter.";
+        String goNameCapture = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
+        if (goNameCapture != null) {
+          name = goNameCapture;
+          TableRow newRow = scoreTable.addRow();
+          newRow.setInt("Score", score);
+          newRow.setString("Name", name);
+          saveTable(scoreTable, "data/highscores.csv");
+          
+        }
+        gameOverDelay +=2;
+      }
     //check if health is 0 -> lose a life
     } else if (hp == 0) {
       lives -= 1;
@@ -719,18 +726,18 @@ void draw() {
     fill(255);
     text("YOU WIN!", width/2, height/2);
     text(score, width/2, height/3);
-    if (delay < 2 ) { 
-      String preset="Name here, then press Enter.";
-      String op1s = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
-      if (op1s != null) {
-        name = op1s;
+    if (victoryDelay < 2 ) { 
+      String preset = "Enter your name here, then press Enter.";
+      String victNameCapture = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
+      if (victNameCapture != null) {
+        name = victNameCapture;
+        TableRow newRow = scoreTable.addRow();
+        newRow.setInt("Score", score);
+        newRow.setString("Name", name);
+        saveTable(scoreTable, "data/highscores.csv");
       }
-      delay += 2;
+      victoryDelay += 2;
     }
-    TableRow newRow = scoreTable.addRow();
-    newRow.setInt("Score", score);
-    newRow.setString("Name", name);
-    saveTable(scoreTable, "data/highscores.csv");
     if (mousePressed == true){
       exit();
     }
