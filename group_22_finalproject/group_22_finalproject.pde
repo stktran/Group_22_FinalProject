@@ -764,7 +764,7 @@ void draw() {
            flag = false;
            numEnemies = 4;
         } 
-        if ( enemybullets.size() < numEnemies ) {
+        if (enemybullets.size() < numEnemies ) {
           ownerMarker = 0;
           for (Enemy grunt:enemies) {
             skip = false;
@@ -815,26 +815,43 @@ void draw() {
          //println("BOSS ROUND");
          //BOSSS
          Enemy temp = new Enemy(100, 100, 250, 250, 15,"boss");
-         //Enemy temp2 = new Enemy(300, 300, 100, 100, 5);
-         //Enemy temp3 = new Enemy(100, 300, 100, 100, 5);
+         Enemy temp2 = new Enemy(300, 300, 100, 100, 5, "enemyLaser");
+         Enemy temp3 = new Enemy(100, 300, 100, 100, 5, "enemyLaser");
          enemies.add(temp);
-        // enemies.add(temp2);
-         //enemies.add(temp3);
+         enemies.add(temp2);
+         enemies.add(temp3);
          new_enemy = true;
          flag = false;
          numEnemies = 1;
       }
       if (enemybullets.size() < numEnemies ) {
+          ownerMarker = 0;
           for (Enemy grunt:enemies) {
-            Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
-            elaser.play();
-            enemybullets.add(ebullet);
+            skip = false;
+            for (Bullet eshot:enemybullets) {
+              if (eshot.getOwner(ownerMarker)) {
+                skip = true;
+              }
+            }
+            if (!skip) {
+
+              if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+                grunt.fired();
+              }else if (grunt.getWeapon() == "boss") {
+                Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
+                elaser.play();
+                enemybullets.add(ebullet);
+              }
+              grunt.cool();
+              //println(ownerMarker, grunt.getWeapon(), delay1);
+            }
+            ownerMarker += 1;
+            
           }
-         /* for (Enemy bos:boss) {
-            Bullet ebullet = new Bullet(bos.getX(), bos.getY(),"laser");
-            enemybullets.add(ebullet);
-          }*/
-      }  
+        }  
           counter += 1;
       if (new_enemy == true){
         updateAll();
