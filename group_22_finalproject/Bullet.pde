@@ -63,12 +63,12 @@ class Bullet {
         rect(x,500,x+5,originY);
         rectMode(CENTER);
         rearTime += 20;
-      }else {
-
-        
-
       }
       
+    }
+    else if (type == "rocket") {
+      fill(255,0,0);
+      rect(x,y,10,10);
     }
     else if (type == "boss"){
       //println(y);
@@ -118,6 +118,22 @@ class Bullet {
         y+= 30;
       //}
       
+    }else if (type == "rocket") {
+      if (leadTime < 25) {
+        if (direction == "enemy") {
+          y += 1;
+        }else if (direction == "player") {
+          y -= 1;
+        }
+      }
+      else {
+        if (direction == "enemy") {
+          y += 20;
+        }else if (direction == "player") {
+          y -= 20;
+        }
+        
+      }
     }
     
   }

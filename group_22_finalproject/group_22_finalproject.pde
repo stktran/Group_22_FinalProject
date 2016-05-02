@@ -853,7 +853,7 @@ void draw() {
          enemies.add(temp3);
          new_enemy = true;
          flag = false;
-         numEnemies = 1;
+         numEnemies = 3;
       }
       if (enemybullets.size() < numEnemies ) {
           ownerMarker = 0;
@@ -968,12 +968,12 @@ void boundaryBullets() {
   while(deadEnemyBullets.size() >0) {
     //println("num dead bullets",deadEnemyBullets.size(),"num ebullets", enemybullets.size(), "ebcounter", ebcounter,"bullet number", deadEnemyBullets.get(0));
     //fix to the bullet counting error
-    //if (deadEnemyBullets.get(0) == 0) {
-    //  enemybullets.remove(deadEnemyBullets.get(0));
-    //}else {
+    if (deadEnemyBullets.get(0) == 0) {
+      enemybullets.remove(deadEnemyBullets.get(0));
+    }else {
       //println("removing", deadEnemyBullets.get(0)-ebcounter);
       enemybullets.remove(deadEnemyBullets.get(0)-ebcounter);//////
-   // }
+    }
     deadEnemyBullets.remove(0);
     ebcounter += 1;
   }
@@ -1169,7 +1169,7 @@ void mousePressed(){
   }
     //fire bullets!
   else if(!StartScreen && !PauseScreen) {
-    Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
+    Bullet temp = new Bullet(playerPosX, playerPosY-50,"rocket",0);
     bullets.add(temp);
   }
   
