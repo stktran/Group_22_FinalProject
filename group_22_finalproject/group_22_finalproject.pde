@@ -183,8 +183,7 @@ void draw() {
   if (gpad != null) {
     
   }
-    
-  
+
   if (StartScreen == true) {
     if (rectPressed) {
       background(255);
@@ -209,8 +208,6 @@ void draw() {
       //boolean firePressed = gpad.getButton("FIRE").pressed();
       boolean upCONT = gpad.getButton("UP").pressed();
       boolean downCONT = gpad.getButton("DOWN").pressed();
-     // boolean leftCONT = gpad.getButton("LEFT").pressed();
-     // boolean rightCONT = gpad.getButton("RIGHT").pressed();
       boolean startPressed = gpad.getButton("START").pressed();
       boolean xPressed = gpad.getButton("XBUTTON").pressed();
       if ((upPressed == true || upCONT == true || downPressed == true || downCONT == true)){
@@ -305,7 +302,7 @@ void draw() {
     
     if (gpad != null) {
       //boolean firePressed = gpad.getButton("FIRE").pressed();
-     // boolean upCONT = gpad.getButton("UP").pressed();
+      // boolean upCONT = gpad.getButton("UP").pressed();
       //boolean downCONT = gpad.getButton("DOWN").pressed();
       boolean leftCONT = gpad.getButton("LEFT").pressed();
       boolean rightCONT = gpad.getButton("RIGHT").pressed();
@@ -558,7 +555,7 @@ void draw() {
       boolean leftCONT = gpad.getButton("LEFT").pressed();
       boolean rightCONT = gpad.getButton("RIGHT").pressed();
       boolean startPressed = gpad.getButton("START").pressed();
-      //boolean xPressed = gpad.getButton("XBUTTON").pressed();
+      boolean xPressed = gpad.getButton("XBUTTON").pressed();
       //improved player actions allows multiple commands at once
       if (upPressed == true || upCONT == true) {
         player.moveUp();
@@ -581,10 +578,22 @@ void draw() {
         fireweapon = true;
       }
       if((fireweapon == true && firePressed == false)) {
-        plaser.play();
-        Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
-        bullets.add(temp);
-        fireweapon = false; 
+        if(blueSelect == true) {
+          Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
+          plaser.play();
+          bullets.add(temp);
+          fireweapon = false;
+        }else if(orangeSelect == true) {
+          Bullet temp = new Bullet(playerPosX, playerPosY-50,"burst",0);
+          plaser.play();
+          bullets.add(temp);
+          fireweapon = false;
+        }else if((!StartScreen && !PauseScreen) && greenSelect == true) {
+          Bullet temp = new Bullet(playerPosX, playerPosY-50,"rocket",0);
+          plaser.play();
+          bullets.add(temp);
+          fireweapon = false;
+        }
       }
       
       }
@@ -1167,9 +1176,21 @@ void mousePressed(){
       ShipSelect = false;
     }
   }
-    //fire bullets!
-  else if(!StartScreen && !PauseScreen) {
+  
+  //weapon select
+  else if((!StartScreen && !PauseScreen) && blueSelect == true) {
+    Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
+    plaser.play();
+    bullets.add(temp);
+  }
+  else if((!StartScreen && !PauseScreen) &&  orangeSelect == true) {
+    Bullet temp = new Bullet(playerPosX, playerPosY-50,"burst",0);
+    plaser.play();
+    bullets.add(temp);
+  }
+  else if((!StartScreen && !PauseScreen) && greenSelect == true) {
     Bullet temp = new Bullet(playerPosX, playerPosY-50,"rocket",0);
+    plaser.play();
     bullets.add(temp);
   }
   

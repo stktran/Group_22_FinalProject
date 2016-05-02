@@ -18,7 +18,13 @@ class Bullet {
     if (type == "cannon") {
       //println("cannon", y);
       fill(255);
-      rect(x,y,5,10);//bullet appearance
+      rect(x,y-20,5,10);//bullet appearance
+    }
+    else if (type == "burst") {
+      //println("cannon", y);
+      fill(255);
+      triangle(x,y,30,5,x+10,y+10);//bullet appearance
+
     }
     else if (type == "laser"){
       //println(y);
@@ -108,11 +114,14 @@ class Bullet {
   void move(String direction) {
     if ( y >-10 && type == "cannon"){
       if (direction == "player") {
-        y -= 6;
+        y -= 10;
       } else if (direction == "enemy") {
         y += 8;
-        //println(y);
       }
+      
+    }else if (type == "burst") {
+        y-= 8;
+      
     }else if (type == "enemyLaser") {
       //if (y < 480) {
         y+= 30;
