@@ -87,10 +87,14 @@ SoundFile sample, pew, selectmove, select, elaser, plaser;
 Timer t1;
 
 //high score
-String[] hScoreArray;
-JSONArray scoreValues;
-int hScore;
-String name;
+
+Table scoreTable;
+String name = "";
+int victoryDelay = 1;
+int gameOverDelay = 1;
+int tableCounter = 1;
+int scoreDelay = 1;
+
 
 // Arrays of varaibles
 ArrayList <Bullet> bullets;
@@ -134,8 +138,19 @@ void setup() {
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
+  
   //high score loading
-  //scoreValues = loadJSONArray("highscores.json");
+
+  scoreTable = loadTable("highscores.csv", "header");
+  scoreTable.sortReverse(0);
+  try {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+  }
+
+
   noStroke();
   
   //HUD and player
@@ -245,17 +260,23 @@ void draw() {
   //High score menu
   if (!StartScreen && highScore == true) {
     //background(245, 30, 50);
-    image(img, 0, 0, 500, 500);
-    text("High Scores", 250, 50);
-    for (int i = 0; i < scoreValues.size(); i++) {
-      JSONObject score = scoreValues.getJSONObject(i);
-      int hScore = score.getInt("score");
-      String name = score.getString("name");
-      stroke(12);
-      textSize(0);
-      textFont(courier);
-      textAlign(CENTER, CENTER);
-      text(hScore + " - " + name, 250, 100 + i*25);
+
+    if (scoreDelay < 2) {
+      image(img, 0, 0, 500, 500);
+      text("High Scores", 250, 50);
+      for (TableRow row : scoreTable.rows()) {
+        if (row != null) { 
+          int hScore = row.getInt("Score");
+          String pname = row.getString("Name");
+          stroke(12);
+          textFont(courier);
+          textAlign(CENTER, CENTER);
+          textSize(20);
+          text(hScore + " - " + pname, 250, 100 + tableCounter*25);
+          tableCounter += 1;
+        }
+      }
+      scoreDelay = 10;
     }
   }
   // Ship Select Menu
@@ -377,6 +398,19 @@ void draw() {
       fill(255);
       text("Game Over",width/2,height/2);
       text(score,width/2,height/3);
+      if (gameOverDelay < 2) {
+        String preset = "Enter your name here, then press Enter.";
+        String goNameCapture = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
+        if (goNameCapture != null) {
+          name = goNameCapture;
+          TableRow newRow = scoreTable.addRow();
+          newRow.setInt("Score", score);
+          newRow.setString("Name", name);
+          saveTable(scoreTable, "data/highscores.csv");
+          
+        }
+        gameOverDelay +=2;
+      }
     //check if health is 0 -> lose a life
     } else if (hp == 0) {
       lives -= 1;
@@ -650,13 +684,11 @@ void draw() {
             }
             if (!skip) {
 
-              
               if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
                 Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
                 enemybullets.add(ebullet);
-                elaser.play();
                 grunt.fired();
-              }else if (grunt.getWeapon() == "cannon") {
+              }else if ( grunt.getWeapon() == "cannon") {
                 Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
                 enemybullets.add(ebullet);
               }
@@ -774,7 +806,6 @@ void draw() {
               }
             }
             if (!skip) {
-
               if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
                 Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
                 elaser.play();
@@ -879,6 +910,20 @@ void draw() {
     fill(255);
     text("YOU WIN!", width/2, height/2);
     text(score, width/2, height/3);
+
+    if (victoryDelay < 2 ) { 
+      String preset = "Enter your name here, then press Enter.";
+      String victNameCapture = JOptionPane.showInputDialog(frame, "Enter your name: ", preset);
+      if (victNameCapture != null) {
+        name = victNameCapture;
+        TableRow newRow = scoreTable.addRow();
+        newRow.setInt("Score", score);
+        newRow.setString("Name", name);
+        saveTable(scoreTable, "data/highscores.csv");
+      }
+      victoryDelay += 2;
+    }
+    
     if (mousePressed == true){
       exit();
     }
