@@ -21,7 +21,6 @@ ButtonRect orange;
 ButtonRect green;
 
 ///PS3 Controller
-import javax.swing.*; 
 import org.gamecontrolplus.gui.*;
 import org.gamecontrolplus.*;
 import net.java.games.input.*;
@@ -43,10 +42,12 @@ boolean muteRect = false;
 // Gui Buttons 
 ButtonRect rect;
 ButtonRect hScoreButton;
+ButtonRect mainMenuButton;
 ButtonRect quit;
 ButtonRect mute;
 boolean rectPressed = false;
 boolean hScoreButtonPressed = false;
+boolean mainMenuButtonPressed = false;
 boolean mutePressed = false;
 Vehicle player;
 //Enemy enemy1;
@@ -87,7 +88,7 @@ SoundFile sample, pew, selectmove, select, elaser, plaser;
 Timer t1;
 
 //high score
-
+import javax.swing.*; 
 Table scoreTable;
 String name = "";
 int victoryDelay = 1;
@@ -138,9 +139,9 @@ void setup() {
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
+  mainMenuButton = new ButtonRect(330, 420, 160, 60, color(140), color(110));
   
   //high score loading
-
   scoreTable = loadTable("highscores.csv", "header");
   scoreTable.sortReverse(0);
   try {
@@ -149,7 +150,6 @@ void setup() {
   catch (Exception e) {
     e.printStackTrace();
   }
-
 
   noStroke();
   
@@ -256,13 +256,16 @@ void draw() {
 
   //High score menu
   if (!StartScreen && highScore == true) {
-    //background(245, 30, 50);
-
+    mainMenuButton.update(mouseX, mouseY);
+    mainMenuButton.display();
+    fill(225);
+    textFont(courier);
+    text("Main Menu", 410, 445);
     if (scoreDelay < 2) {
       image(img, 0, 0, 500, 500);
       text("High Scores", 250, 50);
       for (TableRow row : scoreTable.rows()) {
-        if (row != null) { 
+        if (row != null && tableCounter < 11) { 
           int hScore = row.getInt("Score");
           String pname = row.getString("Name");
           stroke(12);
@@ -299,7 +302,6 @@ void draw() {
     if (green.isMouseOver == true){
       text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 50, 300, 500);
     }
-    
     if (gpad != null) {
       //boolean firePressed = gpad.getButton("FIRE").pressed();
       // boolean upCONT = gpad.getButton("UP").pressed();
@@ -401,10 +403,12 @@ void draw() {
         if (goNameCapture != null) {
           name = goNameCapture;
           TableRow newRow = scoreTable.addRow();
+          if (score < 1000) {
+            score = 1000;
+          }
           newRow.setInt("Score", score);
           newRow.setString("Name", name);
-          saveTable(scoreTable, "data/highscores.csv");
-          
+          saveTable(scoreTable, "data/highscores.csv"); 
         }
         gameOverDelay +=2;
       }
@@ -1160,6 +1164,14 @@ void mousePressed(){
       highScore = true;
     }
   }
+  
+  //high score menu
+  if (highScore == true) {
+    if(mainMenuButton.isPressed()) {
+      StartScreen = true;
+      highScore = false;
+    }
+  }
  
   //ship selection
   if (!StartScreen && ShipSelect == true){
@@ -1217,6 +1229,7 @@ void mousePressed(){
 void mouseReleased() {
   rect.isReleased();
   hScoreButton.isReleased();
+  mainMenuButton.isReleased();
   quit.isReleased();
 }
 
