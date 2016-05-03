@@ -23,11 +23,12 @@ class Bullet {
     }
     else if (type == "burst") {
       fill(0, 200, 175);
-      rect(x,y,10,20);
+      //rect(x,y,10,20);
+      triangle(x,y-20,x-20, y+10, x+20, y+10);
       fill(255);
       rect(burstX,y,10,10);
       //rect(burstX,y,burstX,10);
-      //triangle(x,y,x+50, y+10, x+10, y+10);//bullet appearance
+      //bullet appearance
       //rect(x+100,x+100,15, 15);//bullet appearance
       //ellipse(x+100,y,x+10,y);
 
@@ -80,7 +81,7 @@ class Bullet {
     }
     else if (type == "rocket") {
       fill(255,0,0);
-      rect(x,y,10,10);
+      rect(x,y,50,8);
     }
     else if (type == "boss"){
       //println(y);
@@ -128,7 +129,7 @@ class Bullet {
     }else if (type == "burst") {
       
           burstX = x + int(sin(y)*50);
-          y -= 4;
+          y -= 10;
           
         
         /*

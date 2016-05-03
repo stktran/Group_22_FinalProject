@@ -859,8 +859,8 @@ void draw() {
          //println("BOSS ROUND");
          //BOSSS
          Enemy temp = new Enemy(100, 100, 250, 250, 15,"boss");
-         Enemy temp2 = new Enemy(300, 300, 100, 100, 5, "enemyLaser");
-         Enemy temp3 = new Enemy(100, 300, 100, 100, 5, "enemyLaser");
+         Enemy temp2 = new Enemy(300, 300, 100, 100, 5, "cannon");
+         Enemy temp3 = new Enemy(100, 300, 100, 100, 5, "cannon");
          enemies.add(temp);
          enemies.add(temp2);
          enemies.add(temp3);
@@ -879,7 +879,7 @@ void draw() {
             }
             if (!skip) {
 
-              if (grunt.getWeapon() == "enemyLaser" && grunt.getCooldown() == 0) {
+              if (grunt.getWeapon() == "cannon" && grunt.getCooldown() == 0) {
                 Bullet ebullet = new Bullet(grunt.getX(), grunt.getY(),grunt.getWeapon(),ownerMarker);
                 elaser.play();
                 enemybullets.add(ebullet);
