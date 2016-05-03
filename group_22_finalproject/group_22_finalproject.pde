@@ -16,6 +16,9 @@ PImage en_image;
 boolean blueSelect = false;
 boolean orangeSelect = false;
 boolean greenSelect = false;
+boolean blueSelect2 = false;
+boolean orangeSelect2 = false;
+boolean greenSelect2 = false;
 ButtonRect blue;
 ButtonRect orange;
 ButtonRect green;
@@ -27,6 +30,9 @@ import net.java.games.input.*;
 ControlIO control;
 Configuration config;
 ControlDevice gpad;
+ControlIO control2;
+Configuration config2;
+ControlDevice gpad2;
 
 // Menu Select Buttons
 boolean startSelect = false;
@@ -35,6 +41,9 @@ boolean mover = false;
 boolean blueRect = false;
 boolean orangeRect = false;
 boolean greenRect = false;
+boolean blueRect2 = false;
+boolean orangeRect2 = false;
+boolean greenRect2 = false;
 boolean quitRect = false;
 boolean contRect = false;
 boolean muteRect = false;
@@ -45,12 +54,18 @@ ButtonRect hScoreButton;
 ButtonRect mainMenuButton;
 ButtonRect quit;
 ButtonRect mute;
+ButtonRect vsmode;
+ButtonRect solomode;
 boolean rectPressed = false;
 boolean hScoreButtonPressed = false;
 boolean mainMenuButtonPressed = false;
 boolean mutePressed = false;
+boolean vsPressed = false;
+boolean soloPressed = false;
+
+
 Vehicle player;
-//Enemy enemy1;
+Vehicle player2;
 
 //starting position
 int playerPosX = 500/2;
@@ -114,9 +129,12 @@ void setup() {
   // Initialize the ControlIO
   String message = "This game was developed with a PS3 controller."+ "\n" +"If you have a USB controlled device consult README to configure." + "\n" +"If not press Exit Game to use mouse and keyboard.";
   JOptionPane.showMessageDialog(frame, message);
-  control = ControlIO.getInstance(this);
   // Find a device that matches the configuration file
+  control = ControlIO.getInstance(this);
   gpad = control.getMatchedDevice("gamepad1");
+  //Second Controller
+  control2 = ControlIO.getInstance(this);
+  gpad2 = control2.getMatchedDevice("gamepad2");
  
 
   
@@ -135,11 +153,14 @@ void setup() {
   blue = new ButtonRect(50, 150, 100, 200, color(0, 175, 244), color(0));
   orange = new ButtonRect(200, 150, 100, 200, color(0, 175, 244), color(0));
   green = new ButtonRect(350, 150, 100, 200, color(0, 175, 244), color(0));
+  vsmode = new ButtonRect(300,450,100,40, color(140), color(110));
+  solomode = new ButtonRect(100,450,100,40, color(140), color(110));
   mute = new ButtonRect(180,150,140,60, color(140), color(110));
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
   hScoreButton = new ButtonRect(150, 420, 200, 60, color(140), color(110));
   mainMenuButton = new ButtonRect(330, 420, 160, 60, color(140), color(110));
+  
   
   //high score loading
   scoreTable = loadTable("highscores.csv", "header");
@@ -282,6 +303,12 @@ void draw() {
   // Ship Select Menu
   if (!StartScreen && ShipSelect == true){
     background(0);
+    vsmode.update(mouseX, mouseY);
+    vsmode.display();
+    fill(235);
+    solomode.update(mouseX, mouseY);
+    solomode.display();
+    fill(235);
     blue.update(mouseX, mouseY);
     blue.display();
     fill(235);
@@ -291,8 +318,12 @@ void draw() {
     green.update(mouseX, mouseY);
     green.display();
     fill(235);
+    textSize(20);
+    text("Versus", 350,height/2+225);
+    text("Solo", 150,height/2+225);
     fill(255);
-    textSize(20);  
+    textSize(20);
+    
     if (blue.isMouseOver == true){
       text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 50, 300, 500);
     }
@@ -310,43 +341,43 @@ void draw() {
       boolean rightCONT = gpad.getButton("RIGHT").pressed();
       boolean startPressed = gpad.getButton("START").pressed();
       boolean xPressed = gpad.getButton("XBUTTON").pressed();
-    if (leftPressed == true || leftCONT == true){
-      if (blueRect == false && orangeRect == false && greenRect == false){
-        selectmove.play();
-        blueRect = true;
-      } else if (blueRect == true && orangeRect == false && greenRect == false){
-        selectmove.play();
-        blueRect = false;
-        greenRect = true;
-      } else if (blueRect == false && orangeRect == false && greenRect == true){
-        selectmove.play();
-        greenRect = false;
-        orangeRect = true;
-      } else if (blueRect == false && orangeRect == true && greenRect == false){
-        selectmove.play();
-        orangeRect = false;
-        blueRect = true;
+      if (leftPressed == true || leftCONT == true){
+        if (blueRect == false && orangeRect == false && greenRect == false){
+          selectmove.play();
+          blueRect = true;
+        } else if (blueRect == true && orangeRect == false && greenRect == false){
+          selectmove.play();
+          blueRect = false;
+          greenRect = true;
+        } else if (blueRect == false && orangeRect == false && greenRect == true){
+          selectmove.play();
+          greenRect = false;
+          orangeRect = true;
+        } else if (blueRect == false && orangeRect == true && greenRect == false){
+          selectmove.play();
+          orangeRect = false;
+          blueRect = true;
+        }
       }
-    }
-    if (downPressed == true || rightCONT == true){
-      if (blueRect == false && orangeRect == false && greenRect == false){
-        selectmove.play();
-        blueRect = true;
-      } else if (blueRect == true && orangeRect == false && greenRect == false){
-        selectmove.play();
-        blueRect = false;
-        orangeRect = true;
-      } else if (blueRect == false && orangeRect == false && greenRect == true){
-        selectmove.play();
-        greenRect = false;
-        blueRect = true;
-      }  else if (blueRect == false && orangeRect == true && greenRect == false){
-        selectmove.play();
-        orangeRect = false;
-        greenRect = true;
-      }
+      if (downPressed == true || rightCONT == true){
+        if (blueRect == false && orangeRect == false && greenRect == false){
+          selectmove.play();
+          blueRect = true;
+        } else if (blueRect == true && orangeRect == false && greenRect == false){
+          selectmove.play();
+          blueRect = false;
+          orangeRect = true;
+        } else if (blueRect == false && orangeRect == false && greenRect == true){
+          selectmove.play();
+          greenRect = false;
+          blueRect = true;
+        }  else if (blueRect == false && orangeRect == true && greenRect == false){
+          selectmove.play();
+          orangeRect = false;
+          greenRect = true;
+        }
     
-    }
+      }
     if (blueRect == true){
           text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 50, 300, 500);
           fill(0, 175, 244);
@@ -364,21 +395,134 @@ void draw() {
           rect(350, 150, 100, 200);
           //noStroke();
       }
+      
     if ((xPressed == true || startPressed == true) && (blueRect == true)){
       select.play();
       blueSelect = true;
-      ShipSelect = false;
+      orangeSelect = false;
+      greenSelect = false;
     }
     if ((xPressed == true || startPressed == true) && (orangeRect == true)){
       select.play();
       orangeSelect = true;
-      ShipSelect = false; 
+      greenSelect = false;
+      blueSelect= false; 
      }
      if ((xPressed == true || startPressed == true) && (greenRect == true)){
        select.play();
        greenSelect = true;
-      ShipSelect = false;
+       orangeSelect = false;
+       blueSelect = false;
      }
+    }
+    
+    if (gpad2 != null) {
+      //boolean firePressed = gpad.getButton("FIRE").pressed();
+      // boolean upCONT = gpad.getButton("UP").pressed();
+      //boolean downCONT = gpad.getButton("DOWN").pressed();
+      boolean leftCONT2 = gpad2.getButton("LEFT").pressed();
+      boolean rightCONT2 = gpad2.getButton("RIGHT").pressed();
+      boolean startPressed2 = gpad2.getButton("START").pressed();
+      boolean xPressed2 = gpad2.getButton("XBUTTON").pressed();
+      if (leftPressed == true || leftCONT2 == true){
+        if (blueRect2 == false && orangeRect2 == false && greenRect2 == false){
+          selectmove.play();
+          blueRect2 = true;
+        } else if (blueRect2 == true && orangeRect2 == false && greenRect2 == false){
+          selectmove.play();
+          blueRect2 = false;
+          greenRect2 = true;
+        } else if (blueRect2 == false && orangeRect2 == false && greenRect2 == true){
+          selectmove.play();
+          greenRect2 = false;
+          orangeRect2 = true;
+        } else if (blueRect2 == false && orangeRect2 == true && greenRect2 == false){
+          selectmove.play();
+          orangeRect2 = false;
+          blueRect2 = true;
+        }
+      }
+      if (downPressed == true || rightCONT2 == true){
+        if (blueRect2 == false && orangeRect2 == false && greenRect2 == false){
+          selectmove.play();
+          blueRect2 = true;
+        } else if (blueRect2 == true && orangeRect2 == false && greenRect2 == false){
+          selectmove.play();
+          blueRect2 = false;
+          orangeRect2 = true;
+        } else if (blueRect2 == false && orangeRect2 == false && greenRect2 == true){
+          selectmove.play();
+          greenRect2 = false;
+          blueRect2 = true;
+        }  else if (blueRect2 == false && orangeRect2 == true && greenRect2 == false){
+          selectmove.play();
+          orangeRect2 = false;
+          greenRect2 = true;
+        }
+    
+      }
+    if (blueRect2 == true){
+          text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 370, 300, 500);
+          fill(244, 175, 0);
+          rect(50, 150, 100, 200);
+          //mover = false; 
+      }else if (orangeRect2 == true){
+          text("The Orange You Glad ship has multiple shots", 100, 370, 300, 500);
+          fill(244, 175, 0);
+          rect(200, 150, 100, 200);
+      }else if (greenRect2 == true){
+          text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 370, 300, 500);
+          //noFill();
+          //strokeWeight(5);
+          fill(244, 175, 0);
+          rect(350, 150, 100, 200);
+          //noStroke();
+      }
+      
+    if ((xPressed2 == true || startPressed2 == true) && (blueRect2 == true)){
+      select.play();
+      blueSelect2 = true;
+      orangeSelect2 = false;
+      greenSelect2 = false; 
+    }
+    if ((xPressed2 == true || startPressed2 == true) && (orangeRect2 == true)){
+      select.play();
+      orangeSelect2 = true;
+      blueSelect2 = false;
+      greenSelect2 = false; 
+     }
+     if ((xPressed2 == true || startPressed2 == true) && (greenRect2 == true)){
+       select.play();
+       greenSelect2 = true;
+       orangeSelect2 = false;
+       blueSelect2 = false;
+     }
+    }
+    if (blueSelect == true){
+      text("Player 1:", 100, 25);
+      fill(#1CABEA);
+      rect(160, 14, 12, 12);
+    } else if (greenSelect == true){
+      text("Player 1:", 100, 25);
+      fill(#2AC63B);
+      rect(160, 14, 12, 12);
+    } else if (orangeSelect == true){
+      text("Player 1:",100, 25);
+      fill(#EA9F11);
+      rect(160, 14, 12, 12);
+    }
+    if (blueSelect2 == true){
+      text("Player 2:", 400, 25);
+      fill(#1CABEA);
+      rect(460, 14, 12, 12);
+    } else if (greenSelect2 == true){
+      text("Player 2:", 300, 25);
+      fill(#2AC63B);
+      rect(360, 14, 12, 12);
+    } else if (orangeSelect2 == true){
+      text("Player 2:",200, 25);
+      fill(#EA9F11);
+      rect(260, 14, 12, 12);
     }
     image(ship, 50, 150, 100, 200);
     image(orangeship, 200, 150, 100, 200);
@@ -559,7 +703,7 @@ void draw() {
       boolean leftCONT = gpad.getButton("LEFT").pressed();
       boolean rightCONT = gpad.getButton("RIGHT").pressed();
       boolean startPressed = gpad.getButton("START").pressed();
-      boolean xPressed = gpad.getButton("XBUTTON").pressed();
+      //boolean xPressed = gpad.getButton("XBUTTON").pressed();
       //improved player actions allows multiple commands at once
       if (upPressed == true || upCONT == true) {
         player.moveUp();
@@ -1175,18 +1319,33 @@ void mousePressed(){
  
   //ship selection
   if (!StartScreen && ShipSelect == true){
-    if(blue.isPressed()){
-      blueSelect = true;
+    if(solomode.isPressed() && (blueSelect == true || orangeSelect == true || greenSelect == true)){
+      select.play();
       ShipSelect = false;
     }
-    if(orange.isPressed()){
-      orangeSelect = true;
-      ShipSelect = false;
+    if(vsmode.isPressed()){
+      vsPressed = true;
     }
-    if(green.isPressed()){
-      greenSelect = true;
-      ShipSelect = false;
+    
+      if(blue.isPressed()){
+        select.play();
+        blueSelect = true;
+        orangeSelect = false;
+        greenSelect = false;
+      }
+      if(orange.isPressed()){
+        select.play();
+        orangeSelect = true;
+        blueSelect = false;
+        greenSelect = false;
     }
+      if(green.isPressed()){
+        select.play();
+        greenSelect = true;
+        blueSelect = false;
+        orangeSelect = false;
+      }
+    
   }
   
   //weapon select
