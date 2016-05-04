@@ -1,4 +1,3 @@
-//color(58,48,216)
 class Gui {
     
   Gui(int _score, float _hp, int _lives, int _level) {
