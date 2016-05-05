@@ -129,7 +129,7 @@ class Bullet {
     }else if (type == "burst") {
       
           burstX = x + int(sin(y)*50);
-          y -= 10;
+          y -= 15;
           
         
         /*

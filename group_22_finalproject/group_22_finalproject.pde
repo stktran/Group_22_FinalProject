@@ -16,9 +16,6 @@ PImage en_image;
 boolean blueSelect = false;
 boolean orangeSelect = false;
 boolean greenSelect = false;
-boolean blueSelect2 = false;
-boolean orangeSelect2 = false;
-boolean greenSelect2 = false;
 ButtonRect blue;
 ButtonRect orange;
 ButtonRect green;
@@ -30,9 +27,6 @@ import net.java.games.input.*;
 ControlIO control;
 Configuration config;
 ControlDevice gpad;
-ControlIO control2;
-Configuration config2;
-ControlDevice gpad2;
 
 // Menu Select Buttons
 boolean startSelect = false;
@@ -47,7 +41,6 @@ boolean greenRect2 = false;
 boolean quitRect = false;
 boolean contRect = false;
 boolean muteRect = false;
-boolean vsRect = false;
 boolean soloRect = false;
 
 // Gui Buttons 
@@ -56,24 +49,19 @@ ButtonRect hScoreButton;
 ButtonRect mainMenuButton;
 ButtonRect quit;
 ButtonRect mute;
-ButtonRect vsmode;
 ButtonRect solomode;
 boolean rectPressed = false;
 boolean hScoreButtonPressed = false;
 boolean mainMenuButtonPressed = false;
 boolean mutePressed = false;
-boolean vsPressed = false;
 boolean soloPressed = false;
 
 
 Vehicle player;
-Vehicle2 player2;
 
 //starting position
 int playerPosX = 500/2;
 int playerPosY = 500-30;
-int playerPosX2 = 500/2;
-int playerPosY2 = 130;
 int score = 0; 
 int lives = 3;
 float hp = 10;
@@ -81,7 +69,6 @@ int lives2 = 3;
 float hp2 = 10;
 int level = 1;
 Gui gui;
-versusGui vgui;
 int levelIndicatorTime = 0;
 int ownerMarker = 0;
 int delay1 = 0;
@@ -140,9 +127,6 @@ void setup() {
   // Find a device that matches the configuration file
   control = ControlIO.getInstance(this);
   gpad = control.getMatchedDevice("gamepad1");
-  //Second Controller
-  control2 = ControlIO.getInstance(this);
-  gpad2 = control2.getMatchedDevice("gamepad2");
  
   // images initilization
   img = loadImage("home.jpg");
@@ -159,8 +143,7 @@ void setup() {
   blue = new ButtonRect(50, 150, 100, 200, color(0, 175, 244), color(0));
   orange = new ButtonRect(200, 150, 100, 200, color(0, 175, 244), color(0));
   green = new ButtonRect(350, 150, 100, 200, color(0, 175, 244), color(0));
-  vsmode = new ButtonRect(300,450,100,40, color(140), color(110));
-  solomode = new ButtonRect(100,450,100,40, color(140), color(110));
+  solomode = new ButtonRect(180,420,140,60, color(140), color(110));
   mute = new ButtonRect(180,150,140,60, color(140), color(110));
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
@@ -182,12 +165,11 @@ void setup() {
   
   //HUD and player
   player = new Vehicle(playerPosX,playerPosY,30,30);
-  player2 = new Vehicle2(playerPosX2,playerPosY2,30,30);
   gui = new Gui(score, hp, lives, level);
   
   //sound
   sample = new SoundFile(this, "combine.mp3");
-  sample.loop();
+  //sample.loop();
   pew = new SoundFile(this, "ATST.wav");
   select = new SoundFile(this, "SoundMover.wav");
   selectmove = new SoundFile (this, "SpaceSelect.wav");
@@ -310,8 +292,6 @@ void draw() {
   // Ship Select Menu
   if (!StartScreen && ShipSelect == true){
     background(0);
-    vsmode.update(mouseX, mouseY);
-    vsmode.display();
     fill(235);
     solomode.update(mouseX, mouseY);
     solomode.display();
@@ -325,9 +305,8 @@ void draw() {
     green.update(mouseX, mouseY);
     green.display();
     fill(235);
-    textSize(20);
-    text("Versus", 350,height/2+225);
-    text("Solo", 150,height/2+225);
+    textSize(32);
+    text("Solo", width/2, height/2+210);
     fill(255);
     textSize(20);
     
@@ -349,17 +328,8 @@ void draw() {
       boolean startPressed = gpad.getButton("START").pressed();
       boolean xPressed = gpad.getButton("XBUTTON").pressed();
       if (leftCONT == true){
-        if (vsRect == true || soloRect == true){
-          if (soloRect == true){
-            selectmove.play();
-            soloRect = false;
-            vsRect = true;
-          }else if (vsRect == true){
-            selectmove.play();
-            soloRect = true;
-            vsRect = false;
-          }
-        }else if (blueRect == false && orangeRect == false && greenRect == false){
+
+        if (blueRect == false && orangeRect == false && greenRect == false){
           selectmove.play();
           blueRect = true;
         } else if (blueRect == true && orangeRect == false && greenRect == false){
@@ -378,17 +348,7 @@ void draw() {
         
       }
       if (rightCONT == true){
-        if (vsRect == true || soloRect == true){
-          if (soloRect == true){
-            selectmove.play();
-            soloRect = false;
-            vsRect = true;
-          }else if (vsRect == true){
-            selectmove.play();
-            soloRect = true;
-            vsRect = false;
-          }
-        }else if (blueRect == false && orangeRect == false && greenRect == false){
+        if (blueRect == false && orangeRect == false && greenRect == false){
           selectmove.play();
           blueRect = true;
         } else if (blueRect == true && orangeRect == false && greenRect == false){
@@ -413,14 +373,12 @@ void draw() {
           orangeRect = false;
           greenRect = false;
           soloRect = true;
-          vsRect = false;
-        } else if (soloRect == true || vsRect == true){
+        } else if (soloRect == true ){
           selectmove.play();
           blueRect = true;
           orangeRect = false;
           greenRect = false;
           soloRect = false;
-          vsRect = false;
         }
         
       }
@@ -444,16 +402,9 @@ void draw() {
         noFill();
         strokeWeight(5);
         stroke(0, 175, 244);
-        rect(100,450,100,40);
+        rect(200,450,100,40);
         noStroke();
-      } else if (vsRect == true){
-        noFill();
-        strokeWeight(5);
-        stroke(0, 175, 244);
-        rect(300,450,100,40);
-        noStroke();
-        
-      }
+      } 
 
     if ((xPressed == true || startPressed == true) && (blueRect == true)){
       select.play();
@@ -480,231 +431,40 @@ void draw() {
          ShipSelect = false;
        }
      }
-     if ((blueSelect == true || orangeSelect == true || greenSelect == true) && (blueSelect2 == true || orangeSelect2 == true || greenSelect2 == true)){
-       if ((xPressed == true || startPressed == true) && (vsRect == true)){
+     if ((blueSelect == true || orangeSelect == true || greenSelect == true)){
+       if ((xPressed == true || startPressed == true)){
          select.play();
-         vsPressed = true;
          ShipSelect = false;
        }
      }
     }
-    if (gpad2 != null) {
-      //boolean firePressed = gpad.getButton("FIRE").pressed();
-      //boolean upCONT2 = gpad.getButton("UP").pressed();
-      //boolean downCONT2 = gpad.getButton("DOWN").pressed();
-      boolean leftCONT2 = gpad2.getButton("LEFT").pressed();
-      boolean rightCONT2 = gpad2.getButton("RIGHT").pressed();
-      boolean startPressed2 = gpad2.getButton("START").pressed();
-      boolean xPressed2 = gpad2.getButton("XBUTTON").pressed();
-      if (leftCONT2 == true){
-        if (blueRect2 == false && orangeRect2 == false && greenRect2 == false){
-          selectmove.play();
-          blueRect2 = true;
-        } else if (blueRect2 == true && orangeRect2 == false && greenRect2 == false){
-          selectmove.play();
-          blueRect2 = false;
-          greenRect2 = true;
-        } else if (blueRect2 == false && orangeRect2 == false && greenRect2 == true){
-          selectmove.play();
-          greenRect2 = false;
-          orangeRect2 = true;
-        } else if (blueRect2 == false && orangeRect2 == true && greenRect2 == false){
-          selectmove.play();
-          orangeRect2 = false;
-          blueRect2 = true;
-        }
-      }
-      if (rightCONT2 == true){
-        if (blueRect2 == false && orangeRect2 == false && greenRect2 == false){
-          selectmove.play();
-          blueRect2 = true;
-        } else if (blueRect2 == true && orangeRect2 == false && greenRect2 == false){
-          selectmove.play();
-          blueRect2 = false;
-          orangeRect2 = true;
-        } else if (blueRect2 == false && orangeRect2 == false && greenRect2 == true){
-          selectmove.play();
-          greenRect2 = false;
-          blueRect2 = true;
-        }  else if (blueRect2 == false && orangeRect2 == true && greenRect2 == false){
-          selectmove.play();
-          orangeRect2 = false;
-          greenRect2 = true;
-        }
-      }
-      
-    if (blueRect2 == true){
-          fill(255);
-          text("The Blueberry Bazzle ship has a long laser. This ship will get you far.", 100, 370, 300, 500);
-          fill(244, 175, 0);
-          rect(50, 150, 100, 200);
-          //mover = false; 
-      }else if (orangeRect2 == true){
-          fill(255);
-          text("The Orange You Glad ship has multiple shots", 100, 370, 300, 500);
-          fill(244, 175, 0);
-          rect(200, 150, 100, 200);
-      }else if (greenRect2 == true){
-          fill(255);
-          text("The Lean Mean Charlie Sheen String Bean Green Machine it has powerful bombs, but there is a delay in shooting them", 100, 370, 300, 500);
-          //noFill();
-          //strokeWeight(5);
-          fill(244, 175, 0);
-          rect(350, 150, 100, 200);
-          //noStroke();
-      }
-      
-    if ((xPressed2 == true || startPressed2 == true) && (blueRect2 == true)){
-      select.play();
-      blueSelect2 = true;
-      orangeSelect2 = false;
-      greenSelect2 = false; 
-    }
-    if ((xPressed2 == true || startPressed2 == true) && (orangeRect2 == true)){
-      select.play();
-      orangeSelect2 = true;
-      blueSelect2 = false;
-      greenSelect2 = false; 
-     }
-     if ((xPressed2 == true || startPressed2 == true) && (greenRect2 == true)){
-       select.play();
-       greenSelect2 = true;
-       orangeSelect2 = false;
-       blueSelect2 = false;
-     }
-    }
+
     if (blueSelect == true){
       fill(255);
-      text("Player 1:", 100, 25);
+      text("Player 1:", 200, 25);
       fill(#1CABEA);
-      rect(160, 14, 12, 12);
+      rect(260, 14, 12, 12);
     } else if (greenSelect == true){
       fill(255);
-      text("Player 1:", 100, 25);
+      text("Player 1:", 200, 25);
       fill(#2AC63B);
-      rect(160, 14, 12, 12);
+      rect(260, 14, 12, 12);
     } else if (orangeSelect == true){
       fill(255);
-      text("Player 1:",100, 25);
+      text("Player 1:",200, 25);
       fill(#EA9F11);
-      rect(160, 14, 12, 12);
+      rect(260, 14, 12, 12);
     }
-    if (blueSelect2 == true){
-      fill(255);
-      text("Player 2:", 350, 25);
-      fill(#1CABEA);
-      rect(410, 14, 12, 12);
-    } else if (greenSelect2 == true){
-      fill(255);
-      text("Player 2:", 350, 25);
-      fill(#2AC63B);
-      rect(410, 14, 12, 12);
-    } else if (orangeSelect2 == true){
-      fill(255);
-      text("Player 2:",350, 25);
-      fill(#EA9F11);
-      rect(410, 14, 12, 12);
-    }
+
     image(ship, 50, 150, 100, 200);
     image(orangeship, 200, 150, 100, 200);
     image(greenship, 350, 150, 100, 200);
     delay(100);
      
   }
-  if (!StartScreen && !Quit && !Victory && vsPressed == true){
-      background(0);
-      //vgui.display(hp, lives, hp2, lives);
-      removeToLimit();  //checks number of player bullets and clears extras
-      moveAll();        //moves all bullet locations
-      displayAll();     //updates all bullets on screen            could combine these 2 functions?
-      boundaryBullets();//eliminates enemy bullets that reach the edge of the screen
-      imageMode(CENTER);
-      if (gpad != null) {
-        boolean firePressed = gpad.getButton("FIRE").pressed();
-        boolean upCONT = gpad.getButton("UP").pressed();
-        boolean downCONT = gpad.getButton("DOWN").pressed();
-        boolean leftCONT = gpad.getButton("LEFT").pressed();
-        boolean rightCONT = gpad.getButton("RIGHT").pressed();
-        boolean startPressed = gpad.getButton("START").pressed();
-        //boolean xPressed = gpad.getButton("XBUTTON").pressed();
-        //improved player actions allows multiple commands at once
-        if (upPressed == true || upCONT == true) {
-          player.moveUp();
-        }if(downPressed == true || downCONT == true) {
-          player.moveDown();
-        }if(leftPressed == true || leftCONT == true) {
-          player.moveLeft();
-        }if(rightPressed == true || rightCONT == true) {
-          player.moveRight();
-        }
-        playerPosX = player.getX();
-        playerPosY = player.getY();
-      
-        // Pause Menu 
-        if (startPressed == true && !StartScreen){
-          PauseScreen = !PauseScreen;
-        }
-        //fire
-        if (firePressed == true){
-          fireweapon = true;
-        }
-        if((fireweapon == true && firePressed == false)) {
-            Bullet temp = new Bullet(playerPosX, playerPosY-50,"laser",0);
-            plaser.play();
-            bullets.add(temp);
-            fireweapon = false;
-        }
-        
-      }
-      
-      if (gpad2 != null) {
-        boolean firePressed2 = gpad2.getButton("XBUTTON").pressed();
-        boolean upCONT2 = gpad2.getButton("UP").pressed();
-        boolean downCONT2 = gpad2.getButton("DOWN").pressed();
-        boolean leftCONT2 = gpad2.getButton("LEFT").pressed();
-        boolean rightCONT2 = gpad2.getButton("RIGHT").pressed();
-        boolean startPressed2 = gpad2.getButton("START").pressed();
-        //boolean xPressed = gpad.getButton("XBUTTON").pressed();
-        //improved player actions allows multiple commands at once
-        if (upCONT2 == true) {
-          player2.moveUp();
-        }if(downCONT2 == true) {
-          player2.moveDown();
-        }if(leftCONT2 == true) {
-          player2.moveLeft();
-        }if(rightCONT2 == true) {
-          player2.moveRight();
-        }
-        playerPosX2 = player2.getX();
-        playerPosY2 = player2.getY();
-      
-        // Pause Menu 
-        if (startPressed2 == true && !StartScreen){
-          PauseScreen = !PauseScreen;
-        }
-        //fire
-        if (firePressed2 == true){
-          fireweapon2 = true;
-        }
-        if((fireweapon2 == true && firePressed2 == false)) {
-            Bullet temp = new Bullet(playerPosX2, playerPosY2-50,"laser",0);
-            plaser.play();
-            bullets.add(temp);
-            fireweapon2 = false;
-       
-        }
-      }
-      
-      playerPosX = player.getX();
-      playerPosY = player.getY();
-      player.display();
-      playerPosX2 = player2.getX();
-      playerPosY2 = player2.getY();
-      player2.display();
-    
-  }
+  
   //if game has been started, they havnt quit and they havn't won
-  if (!StartScreen && !Quit && !Victory && !ShipSelect && !highScore && vsPressed == false) {
+  if (!StartScreen && !Quit && !Victory && !ShipSelect && !highScore) {
     background(0);
     gui.display(score, hp, lives, level);
     //GAME OVER- check if they lost their last life
@@ -1495,9 +1255,6 @@ void mousePressed(){
     if(solomode.isPressed() && (blueSelect == true || orangeSelect == true || greenSelect == true)){
       select.play();
       ShipSelect = false;
-    }
-    if(vsmode.isPressed()){
-      vsPressed = true;
     }
     
       if(blue.isPressed()){
