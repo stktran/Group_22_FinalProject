@@ -174,7 +174,7 @@ void setup() {
   
   //sound
   sample = new SoundFile(this, "combine.mp3");
-  //sample.loop();
+  sample.loop();
   pew = new SoundFile(this, "ATST.wav");
   select = new SoundFile(this, "SoundMover.wav");
   selectmove = new SoundFile (this, "SpaceSelect.wav");
@@ -1419,10 +1419,12 @@ void keyPressed() {
       leftPressed = true;
     }if(keyCode == RIGHT) {
       rightPressed = true;
-    //secret weapon
-    }if(keyPressed && key == ' ') {
-      mouseClicked = true;
+    
     }
+    //secret weapon
+   // if(keyPressed && key == ' ') {
+     // mouseClicked = true;
+    //}
   }
 }
 
