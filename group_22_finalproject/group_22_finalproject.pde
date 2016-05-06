@@ -636,17 +636,31 @@ void draw() {
          PauseScreen = false;
        }
       if ((xPressed == true || startPressed == true) && (mainRect == true)){
-         select.play();
-         select.play();
-         StartScreen = true;
-         ShipSelect = false;
-         blueSelect = false;
-         orangeSelect = false;
-         greenSelect = false;
-         PauseScreen = false;
-         soloPressed = false;
-         rectPressed = false;
-         mainMenuButtonPressed = false;
+        select.play();
+        StartScreen = true;
+        ShipSelect = false;
+        blueSelect = false;
+        orangeSelect = false;
+        greenSelect = false;
+        PauseScreen = false;
+        soloPressed = false;
+        rectPressed = false;
+        score = 0;
+        hp = 10;
+        lives = 3;
+        level = 1;
+        levelIndicatorTime = 0;
+        ownerMarker = 0;
+        delay1 = 0;
+        numLaserEnemies = 0;
+        flag = true;
+        println("Ping");
+        enemies.clear();
+        bullets.clear();
+        enemybullets.clear();
+        imageMode(CORNER);
+        mainMenuButtonPressed = false;
+        level = 1;
        }
        
       delay(100);
@@ -1366,6 +1380,7 @@ void mousePressed(){
       enemybullets.clear();
       imageMode(CORNER);
       mainMenuButtonPressed = false;
+      level = 1;
       //ShipSelect = false;
     }else if(mute.isPressed() && mutePressed == false){
       select.play();
@@ -1422,8 +1437,10 @@ void keyReleased() {
       leftPressed = false;
     }if(keyCode == RIGHT) {
       rightPressed = false;
-    }if(keyPressed && key == ' ') {
-      mouseClicked = false;
     }
+    
+    //if(keyPressed && key == ' ') {
+    //  mouseClicked = false;
+    //}
   }
 }
