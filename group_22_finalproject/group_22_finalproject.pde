@@ -1272,15 +1272,19 @@ void mousePressed(){
     if (hScoreButton.isPressed()) {
       StartScreen = false;
       highScore = true;
+      hScoreButton.isReleased();
+      println(hScoreButton.isPressed());
     }
   }
   
   //high score menu
-  if (highScore == true) {
+  if (highScore == true && StartScreen == false) {
     if(mainMenuButton.isPressed()) {
       select.play();
       StartScreen = true;
       highScore = false;
+      hScoreButton.isReleased();
+      println(hScoreButton.isPressed());
     }
   }
  
@@ -1347,6 +1351,20 @@ void mousePressed(){
       PauseScreen = false;
       soloPressed = false;
       rectPressed = false;
+      score = 0;
+      hp = 10;
+      lives = 3;
+      level = 1;
+      levelIndicatorTime = 0;
+      ownerMarker = 0;
+      delay1 = 0;
+      numLaserEnemies = 0;
+      flag = true;
+      println("Ping");
+      enemies.clear();
+      bullets.clear();
+      enemybullets.clear();
+      imageMode(CORNER);
       mainMenuButtonPressed = false;
       //ShipSelect = false;
     }else if(mute.isPressed() && mutePressed == false){
