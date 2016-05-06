@@ -42,11 +42,13 @@ boolean quitRect = false;
 boolean contRect = false;
 boolean muteRect = false;
 boolean soloRect = false;
+boolean mainRect = false; 
 
 // Gui Buttons 
 ButtonRect rect;
 ButtonRect hScoreButton;
 ButtonRect mainMenuButton;
+ButtonRect mainReturn;
 ButtonRect quit;
 ButtonRect mute;
 ButtonRect solomode;
@@ -144,6 +146,7 @@ void setup() {
   orange = new ButtonRect(200, 150, 100, 200, color(0, 175, 244), color(0));
   green = new ButtonRect(350, 150, 100, 200, color(0, 175, 244), color(0));
   solomode = new ButtonRect(180,420,140,60, color(140), color(110));
+  mainReturn = new ButtonRect(180,450,140,60, color(140), color(110));
   mute = new ButtonRect(180,150,140,60, color(140), color(110));
   quit = new ButtonRect(180,250,140,60, color(140), color(110));
   rect = new ButtonRect(180,350,140,60, color(140), color(110));
@@ -200,6 +203,7 @@ void draw() {
     }
     //waiting for button press
     else {
+      textAlign(CENTER);
       background(245,30,50);
       image(img,0,0,500,500);
     }
@@ -402,7 +406,7 @@ void draw() {
         noFill();
         strokeWeight(5);
         stroke(0, 175, 244);
-        rect(200,450,100,40);
+        rect(180,420,140,60);
         noStroke();
       } 
 
@@ -431,31 +435,26 @@ void draw() {
          ShipSelect = false;
        }
      }
-     if ((blueSelect == true || orangeSelect == true || greenSelect == true)){
-       if ((xPressed == true || startPressed == true)){
-         select.play();
-         ShipSelect = false;
-       }
-     }
+     
     }
 
     if (blueSelect == true){
       fill(255);
-      text("Player 1:", 200, 25);
+      text("Player 1:", 225, 25);
       fill(#1CABEA);
-      rect(260, 14, 12, 12);
+      rect(285, 14, 12, 12);
     } else if (greenSelect == true){
       fill(255);
-      text("Player 1:", 200, 25);
+      text("Player 1:", 225, 25);
       fill(#2AC63B);
-      rect(260, 14, 12, 12);
+      rect(285, 14, 12, 12);
     } else if (orangeSelect == true){
       fill(255);
-      text("Player 1:",200, 25);
+      text("Player 1:",225, 25);
       fill(#EA9F11);
-      rect(260, 14, 12, 12);
+      rect(285, 14, 12, 12);
     }
-
+    
     image(ship, 50, 150, 100, 200);
     image(orangeship, 200, 150, 100, 200);
     image(greenship, 350, 150, 100, 200);
@@ -507,7 +506,12 @@ void draw() {
         //paused
         PauseScreen = true;
       }
-      
+      //pause screen buttons and game title
+      mainReturn.update(mouseX, mouseY);
+      mainReturn.display();
+      fill(235);
+      textFont(courier);
+      text("Main", width/2, height/2+240);
       //pause screen buttons and game title
       mute.update(mouseX, mouseY);
       mute.display();
@@ -538,50 +542,64 @@ void draw() {
         boolean startPressed = gpad.getButton("START").pressed();
         boolean xPressed = gpad.getButton("XBUTTON").pressed();
       if (upPressed == true || upCONT == true){
-        if (muteRect == false && quitRect == false && contRect == false){
+        if (mainRect == false && muteRect == false && quitRect == false && contRect == false){
           selectmove.play();
-          muteRect = true;
-      } else if (muteRect == true && quitRect == false && contRect == false){
+          mainRect = true;
+      } else if (mainRect == true && muteRect == false && quitRect == false && contRect == false){
           selectmove.play();
-          muteRect = false;
+          mainRect = false;
           contRect = true;
-      } else if (muteRect == false && quitRect == false && contRect == true){
+      } else if (mainRect == false && muteRect == false && quitRect == false && contRect == true){
           selectmove.play();
           contRect = false;
           quitRect = true;
-      } else if (muteRect == false && quitRect == true && contRect == false){
+      } else if (mainRect == false && muteRect == false && quitRect == true && contRect == false){
           selectmove.play();
           quitRect = false;
           muteRect = true;
+      } else if (mainRect == false && muteRect == true && quitRect == false && contRect == false){
+          selectmove.play();
+          muteRect = false;
+          mainRect = true;
       }
     }  
 
       if (downPressed == true || downCONT == true){
-        if (muteRect == false && quitRect == false && contRect == false){
+        if (mainRect == false && muteRect == false && quitRect == false && contRect == false){
           selectmove.play();
+          mainRect = true;
+      } else if (mainRect == true && muteRect == false && quitRect == false && contRect == false){
+          selectmove.play();
+          mainRect = false;
           muteRect = true;
-      } else if (muteRect == true && quitRect == false && contRect == false){
+      } else if (mainRect == false && muteRect == true && quitRect == false && contRect == false){
           selectmove.play();
           muteRect = false;
           quitRect = true;
-      } else if (muteRect == false && quitRect == false && contRect == true){
-          selectmove.play();
-          contRect = false;
-          muteRect = true;
-      } else if (muteRect == false && quitRect == true && contRect == false){
+      } else if (mainRect == false && muteRect == false && quitRect == true && contRect == false){
           selectmove.play();
           quitRect = false;
           contRect = true;
-      }
+      } else if (mainRect == false && muteRect == false && quitRect == false && contRect == true){
+          selectmove.play();
+          contRect = false;
+          mainRect = true;
+      }   
     }  
     
-      if (muteRect == true){
+      if (mainRect == true){
+        noFill();
+        strokeWeight(5);
+        stroke(0, 175, 244);
+        rect(180,450,140,60);
+        noStroke();
+      }else if (muteRect == true){
         noFill();
         strokeWeight(5);
         stroke(0, 175, 244);
         rect(180,150,140,60);
         noStroke();
-      }else if (quitRect == true){
+      }else if(quitRect == true){
         noFill();
         strokeWeight(5);
         stroke(0, 175, 244);
@@ -611,9 +629,22 @@ void draw() {
         select.play();
         Quit = true;
        }
-       if ((xPressed == true || startPressed == true) && (contRect == true)){
+      if ((xPressed == true || startPressed == true) && (contRect == true)){
          select.play();
          PauseScreen = false;
+       }
+      if ((xPressed == true || startPressed == true) && (mainRect == true)){
+         select.play();
+         select.play();
+         StartScreen = true;
+         ShipSelect = false;
+         blueSelect = false;
+         orangeSelect = false;
+         greenSelect = false;
+         PauseScreen = false;
+         soloPressed = false;
+         rectPressed = false;
+         mainMenuButtonPressed = false;
        }
        
       delay(100);
@@ -1245,6 +1276,7 @@ void mousePressed(){
   //high score menu
   if (highScore == true) {
     if(mainMenuButton.isPressed()) {
+      select.play();
       StartScreen = true;
       highScore = false;
     }
@@ -1298,14 +1330,29 @@ void mousePressed(){
   //unpause game or quit
   else if (PauseScreen == true) {
     if(rect.isPressed()) {
+      select.play();
       PauseScreen = false;
     }else if(quit.isPressed()) {
+      select.play();
       Quit = true;
-      //PauseScreen = false;
+    }else if(mainReturn.isPressed()) {
+      select.play();
+      StartScreen = true;
+      ShipSelect = false;
+      blueSelect = false;
+      orangeSelect = false;
+      greenSelect = false;
+      PauseScreen = false;
+      soloPressed = false;
+      rectPressed = false;
+      mainMenuButtonPressed = false;
+      //ShipSelect = false;
     }else if(mute.isPressed() && mutePressed == false){
+      select.play();
       sample.amp(0);
       mutePressed = true;
     }else if(mute.isPressed() && mutePressed == true){
+      select.play();
       sample.amp(1.0);
       mutePressed = false;
     }
