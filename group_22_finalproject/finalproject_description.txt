@@ -1,6 +1,6 @@
-﻿GUI, Player movement, Start/End Screen, Player and enemy Weapons, Music - Tristen Head tmh2566
+GUI, Player movement, Start/End Screen, Player and enemy Weapons, Music - Tristen Head tmh2566
 Enemy Patterns, player scores, and enemy shield - Steven Tran skt522
-Sprites, Enemy patterns, Enemy movement, Enemy health, controller, mute button- Ernie Forzano eaf692
+Multiple Ships, Ship Select, Contributed weapons, Enemy patterns, Enemy movement, Enemy health, Controller Protocol/GUI, Mute button- Ernie Forzano eaf692
 The sprites came from an artist called MILLIONTH VECTOR. 
 
 The point of the game is to go through the levels and defeat all of the enemy ships without dying first. The first thing is the start screen with the "starfox"
@@ -8,7 +8,9 @@ theme music. Once clicking start it takes you to the first level. The enemy has 
 hits an enemy their score increases by 100. The first enemy has health of 3 as an introductory level. From then on, their is an increase of difficulty through 
 more enemies or increased health of the enemies. We changed the formations of the enemies to make it more difficult as the levels go on. There are 5 different 
 levels. The 5th level is with a Boss with health 15 and two smaller ships with 5 health. We found that people were easily able to kill the enemies if they only 
-were shot once. We included a falling stars background and whenever enemies are attacked they have a shield quickly appear in front of them (its VERY fast).  
+were shot once. 
+
+When you initiate the program, you will see a text box appear this is a Java.swing object to inform the user that they CAN use a separate controller from their mouse and keyboard. If the user decides to continue with the controller than they can configure it using the G4P library GUI. If not the user can press ‘EXIT GAME’, and continue onto playing the game. The controller needed to be able navigate through the menus so booleans and a blue selector. Once Leaving the main menu the ship selector goes through the multiple ships, which each have their own weapon. Upon selecting a ship. You can begin the game. If you want to pause, press ‘start’ on the controller or TAB.   
 
 There is a BUTTON class, which creates and initiates the first START button to enter the game. 
 There is a TIMER class, which is used to determine when to launch the first enemy. 

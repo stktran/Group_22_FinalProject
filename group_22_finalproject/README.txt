@@ -1,4 +1,6 @@
-Open group_22_assignment6.pde 
+Open group_22_assignment6.pde
+
+Download: G4P and Game Control Plus Libraries
 
 If you would like to use your native keyboard and mouse: 
 1. Run the PDE
@@ -6,7 +8,7 @@ If you would like to use your native keyboard and mouse:
 3. Press ‘Exit Game’ to bring you to the start menu and begin the game!
 
 
-If you have a controller preferably a PS3 controller. Attach your controller so that your computer recognizes it. If you do not have PS3 controller you can use the mouse and keyboard. If you would to use a USB device with at least 7 buttons:
+If you have a controller preferably a PS3 controller. Attach your controller so that your computer recognizes it. If you would like to use a USB device with at least 7 buttons:
 
 1. Run the PDE
 2. Read the GUI message and Press okay
