@@ -9,6 +9,7 @@ boolean highScore = false;
 
 // Ship Selection Variables
 PImage img;
+PImage space;
 PImage ship;
 PImage orangeship;
 PImage greenship;
@@ -136,12 +137,13 @@ void setup() {
   orangeship = loadImage("orangeship.png");
   greenship = loadImage("greenship3.png");
   en_image = loadImage("alien3.png");
+  space = loadImage("spacePicture.jpg");
   
   //buttons and text loading
   courier = createFont("Courier-New", 30);
   titleFont = loadFont("BankGothicBT-Medium-80.vlw");
   textFont(courier);
-  textAlign(CENTER);
+  //textAlign(CENTER);
   blue = new ButtonRect(50, 150, 100, 200, color(0, 175, 244), color(0));
   orange = new ButtonRect(200, 150, 100, 200, color(0, 175, 244), color(0));
   green = new ButtonRect(350, 150, 100, 200, color(0, 175, 244), color(0));
@@ -274,9 +276,9 @@ void draw() {
     mainMenuButton.display();
     fill(225);
     textFont(courier);
-    text("Main Menu", 410, 445);
+    text("Main Menu", 410, 460);
     if (scoreDelay < 2) {
-      image(img, 0, 0, 500, 500);
+      image(space, 0, 0, 500, 500);
       text("High Scores", 250, 50);
       for (TableRow row : scoreTable.rows()) {
         if (row != null && tableCounter < 11) { 
@@ -284,7 +286,7 @@ void draw() {
           String pname = row.getString("Name");
           stroke(12);
           textFont(courier);
-          textAlign(CENTER, CENTER);
+          //textAlign(CENTER, CENTER);
           textSize(20);
           text(hScore + " - " + pname, 250, 100 + tableCounter*25);
           tableCounter += 1;
